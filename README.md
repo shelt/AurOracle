@@ -1,6 +1,8 @@
 # AurOracle
 
-This is a utility to generate course schedules that are free from [time conflicts](http://umanitoba.ca/student/records/registration/access/639.html) and that include courses you must take and courses you would take.
+This is a course selection utility for Aurora. Tell it the courses you want to take, and it tells you the ways you can take them.
+
+It generates course schedules that are free from [time conflicts](http://umanitoba.ca/student/records/registration/access/639.html) and that include courses you must take and courses you would take.
 
 I made this because I was sick of spending large amounts of time trying out potential combinations of sections of courses, only to encounter another conflict and be forced to move everything around.
 
@@ -10,7 +12,7 @@ Give the utility the following:
 * The total number of courses you wish to take.
 * The term you wish to generate potential schedules for.
 * The list of courses you MUST take.
-* The list of courses you would take as electives to fill the remaining slots.
+* OPTIONAL: The list of courses you would take as electives to fill any remaining slots.
 * OPTIONAL: The earliest time you could stand being in class.
 * OPTIONAL: The latest time you could stand being in class.
 
@@ -28,7 +30,7 @@ Argument  | Function
 `--number`  | Number of courses you are taking
 `--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fal16)
 `--must`    | The courses you must take. Obviously shouldn't be larger than `--number` value.
-`--would`   | The courses you would take as electives.
+`--would`   | The courses you would take as electives. (optional)
 `--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM")
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM")
 `--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
