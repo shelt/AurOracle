@@ -44,6 +44,8 @@ Also note that because of the large amounts of time between when course schedule
 
 
 ## TODO
+* Implement a cannot-attend-on-these-days feature.
+* Have the script recognize when classes are full.
 * Make the output create a monday list, tuesday list, etc.
 * caching
 * More user error handling
