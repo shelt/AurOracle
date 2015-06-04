@@ -30,6 +30,7 @@ It will then generate potential course schedules, detailing which sections to ta
     
     For --must and --would, you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"
 
+An example of input and output can be seen in the **example-output.txt** file. Eventually the output will be viewable as a day-by-day schedule, perhaps if I make a web GUI for this utility.
 
 ## Disclaimer
 Aurora/the university may or may not care about light web scraping from students. I have yet to hear back. As it stands now, I take no responsibility if you get into trouble using this utility.
