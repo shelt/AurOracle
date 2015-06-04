@@ -7,6 +7,7 @@ import time
 import urllib
 import lib.ElementSoup as esoup
 import itertools
+import argparse
 
 from lib.sorting import quicksort_sections
 from lib.classes import Section,Course
@@ -20,13 +21,16 @@ from lib.classes import Section,Course
                        Aurora's TOS. NOTE: name of HTML file must be the same as the
                        coursename below.
 """
-### CONFIG ###     
-n = 5
-term = "201590"
-m_course_strings = ["COMP 2140", "COMP 2160", "MATH 1300"]
-p_course_strings = ["FREN 1152", "BIOL 3290"]
-offlinemode = True
-##############
+terms = {
+"fall15":"201590",
+"winter16":"201610",
+"summer16":"201650",
+"fall16":"201590",
+"winter17":"201710",
+"summer17":"201750"
+}
+
+
 
 #TODO multiple entries in meeting times?
 """
@@ -41,7 +45,7 @@ def print_section_comb(sections):
 """
     Retrieves the course from Aurora.
 """
-def get_course(name):
+def get_course(name, term, offlinemode):
     name = name.upper()
     course = Course(name)
     subj,crse = name.split(" ")
@@ -51,6 +55,7 @@ def get_course(name):
     else:
         url = "https://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
         html = esoup.parse(urllib.urlopen(url))
+        
     
     nodes = {}
     # This loop builds a dict associating titles to section nodes.
@@ -70,7 +75,6 @@ def get_course(name):
         section_time = tablenode.find("./td[2]").text
         section_day = tablenode.find("./td[3]").text
         if section_num[0] == "A":
-            
             course.sections.append(Section(section_num, section_time, section_day, course))
         elif section_num[0] == "B":
             #create lab if not exists
@@ -86,28 +90,31 @@ def get_course(name):
     """
     MAIN FUNCTION
     """
-def get_valid_tables():
-    valid_tables = []
+def get_valid_combs(number, term_string, m_course_strings, p_course_strings, offlinemode):
+    valid_combs = []
     m_courses = []
     p_courses = []
     
     for coursename in m_course_strings:
-        m_courses.append(get_course(coursename))
+        course = get_course(coursename, term_string, offlinemode)
+        if course != None:
+            m_courses.append(course)
     for coursename in p_course_strings:
-        p_courses.append(get_course(coursename))
+        course = get_course(coursename, term_string, offlinemode)
+        if course != None:
+            p_courses.append(course)
         
-
                 
-    p_combs = itertools.combinations(p_courses, n-len(m_courses)) # set of tuples of possible ways to fill remaining spots
+    p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
     for p_comb in p_combs:                                             # for each way to combine the potential courses
         courselist = list(p_comb) + m_courses                           # set of n courses to take
-        assert(n == len(courselist)) #debugging
+        assert(number == len(courselist)) #debugging
         
-        valid_combs = generate_valid_combinations(courselist)               # (local) list of possible combinations of courses.
-        for valid_comb in valid_combs:
-            if len(valid_comb) > 0:
-                valid_tables.append(valid_comb)
-    return valid_tables
+        combs = generate_valid_combinations(courselist)               # (local) list of possible combinations of courses.
+        for comb in combs:
+            if len(comb) > 0:
+                valid_combs.append(valid_comb)
+    return valid_combs
 
 
     """
@@ -156,8 +163,23 @@ def is_valid_combination(sectionlist):
     
 
 if __name__ == "__main__":
-    valid_tables = get_valid_tables()
-    print("DONE")
+    # PARSING
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', '--number', type=int)
+    parser.add_argument('-t', '--term')
+    parser.add_argument('-m', '--must', nargs='+')
+    parser.add_argument('-w', '--would', nargs='+')
+    parser.add_argument('-o', '--offline',  action='store_true')
+    args = parser.parse_args()
+    
+    args.must = [i.replace("-", " ") for i in args.must]
+    args.would = [i.replace("-", " ") for i in args.would]
+    
+    # Convert termnames
+    args.term = terms[args.term]
+    
+    valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.offline)
+    print("Completed.")
             
             
             
