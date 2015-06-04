@@ -13,16 +13,7 @@ from math import factorial
 
 from lib.sorting import quicksort_sections
 from lib.classes import Section,Course
-"""     PARAMETERS
-    n                : The number of courses wanted.
-    term             : The term you wish to generate for.
-    m_course_strings : Mandatory courses; courses that must be in your schedule.
-    p_course_strings : Potential courses; courses you would be up for taking as electives.
-    offline_mode     : Grab data from "Class Schedule Listing" HTML pages downloaded to the
-                       /offline directory. Implemented because web scraping might be against
-                       Aurora's TOS. NOTE: name of HTML file must be the same as the
-                       coursename below.
-"""
+
 terms = {
 "fall15":"201590",
 "winter16":"201610",
@@ -51,7 +42,10 @@ def get_course(name, term, earliest, latest, offlinemode):
     subj,crse = name.split(" ")
     
     if offlinemode:
-        html = esoup.parse("offline/" + name + ".html")
+        try:
+            html = esoup.parse("offline/" + name + ".html")
+        except IOError:
+            html = esoup.parse("offline/" + subj + "-" + crse + ".html")
     else:
         url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
         
@@ -208,6 +202,15 @@ if __name__ == "__main__":
     parser.add_argument('-l', '--latest')
     args = parser.parse_args()
     
+    # Error checking
+    if not args.number:
+        print("You must specify a number of courses desired. (--number n)")
+        exit()
+    if not args.must and not args.would:
+        print("You must specify at least one course.")
+        exit()
+    
+    # Course parsing
     if not args.must:
         args.must = []
     if not args.would:
@@ -215,10 +218,10 @@ if __name__ == "__main__":
     args.must = [i.replace("-", " ") for i in args.must]
     args.would = [i.replace("-", " ") for i in args.would]
     
-    # Convert termnames
+    # Convert term names
     args.term = terms[args.term]
     
-    # Earliest / latest
+    # Earliest / latest time parsing
     if args.earliest:
         args.earliest = time.strptime(args.earliest, "%I:%M %p")
     if args.latest:
@@ -226,7 +229,11 @@ if __name__ == "__main__":
     
     valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.earliest, args.latest, args.offline)
     # Something can then be done with valid_combs, such as saving to file.
-    print("Completed.")
+    
+    if len(valid_combs) == 0:
+        print("No courses could be generated. Perhaps your request was too specific?")
+    else:
+        print("Generated "+str(len(valid_combs))+" schedules.")
             
             
             
