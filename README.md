@@ -29,9 +29,9 @@ Argument  | Function
 `--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fal16)
 `--must`    | The courses you must take. Obviously shouldn't be larger than `--number` value.
 `--would`   | The courses you would take as electives.
-`--offline` | If this argument is provided, offline mode is enabled. See the source for more info.
 `--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM")
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM")
+`--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
     
 *For --must and --would, you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"*
 
