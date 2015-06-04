@@ -27,7 +27,7 @@ Argument  | Function
 ---|---
 `--number`  | Number of courses you are taking
 `--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fal16)
-`--must`    | The courses you must take. Obviously shouldn't be larger than n.
+`--must`    | The courses you must take. Obviously shouldn't be larger than `--number` value.
 `--would`   | The courses you would take as electives.
 `--offline` | If this argument is provided, offline mode is enabled. See the source for more info.
 `--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM")
