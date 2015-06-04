@@ -41,6 +41,15 @@ Argument  | Function
 
 An example of input and output can be seen in the [example-output.txt](example-output.txt) file. Eventually the output will be viewable as a day-by-day schedule, perhaps if I make a web GUI for this utility.
 
+## Installation
+This utility uses **Python 2.7**.
+
+### Install steps
+* Download and run the Python 2.7 installer found [here](https://www.python.org/downloads/).
+* Download a zip file of the utility from [here](https://github.com/shelt/AurOracle/archive/master.zip)
+* Unzip to a directory.
+* Open a command line in that directory, and run `auroracle.py` followed by the arguments you want.
+
 ## Disclaimer
 Aurora/the university may or may not care about light web scraping from students. I have yet to hear back. As it stands now, I take no responsibility if you get into trouble using this utility.
 
