@@ -18,6 +18,8 @@ Give the utility the following:
 
 It will then generate potential course schedules, detailing which sections to take.
 
+<div style="text-align:center"><img src="https://i.imgur.com/gSgYQQW.png" /></div>
+
 ## Usage
 
 ### Example
