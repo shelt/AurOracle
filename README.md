@@ -25,8 +25,8 @@ It will then generate potential course schedules, detailing which sections to ta
     must    : The courses you must take. Obviously shouldn't be larger than n.
     would   : The courses you would take as electives.
     offline : If this argument is provided, offline mode is enabled. See the source for more info.
-    earliest: The earliest time you could stand being in class at. (Format: 10:00 PM)
-    latest  : The latest time you could stand being in class at.   (Format: 10:00 PM)
+    earliest: The earliest time you could stand being in class at. (Format: "10:00 PM")
+    latest  : The latest time you could stand being in class at.   (Format: "10:00 PM")
     
     For --must and --would, you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"
 
