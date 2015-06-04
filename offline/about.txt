@@ -1,0 +1,1 @@
+To use the utility in offline mode, simply save webpages (ctrl-s) to this directory, and rename the HTML files to the course names (format: COMP-1010). Then, just use the -o flag.
