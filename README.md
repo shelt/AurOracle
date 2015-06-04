@@ -13,9 +13,7 @@ Give the utility the following:
 It will then generate potential course combinations.
 
 ### Usage Example
-<<<<<<< HEAD
     auroracle.py --number 5 --term fall15 --must MATH-1500 CHEM-1500 --would BIOL-3290 FREN-1152 COMP-1010
->>>>>>> 5da9b320181b88b8cbe588b3deacc232057d0510
     
     ARGUMENTS GUIDE
     number  : Number of courses you are taking
