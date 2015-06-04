@@ -49,7 +49,9 @@ def unescape(string):
 #     "best" available <b>TreeBuilder</b> implementation.
 # @return An Element instance representing the HTML root element.
 
-def parse(file, builder=None, encoding=None):
+# Modified slightly to accept raw data if rawmode is true.
+
+def parse(file, builder=None, encoding=None, rawmode=False):
     bob = builder
     def emit(soup):
         if isinstance(soup, BS.NavigableString):
@@ -63,9 +65,12 @@ def parse(file, builder=None, encoding=None):
                 emit(s)
             bob.end(soup.name)
     # determine encoding (the document charset is not reliable)
-    if not hasattr(file, "read"):
+    if not hasattr(file, "read") and not rawmode:
         file = open(file)
-    text = file.read()
+    if rawmode:
+        text = file
+    else:
+        text = file.read()
     if not encoding:
         try:
             encoding = "utf-8"
