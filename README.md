@@ -16,19 +16,24 @@ Give the utility the following:
 
 It will then generate potential course schedules, detailing which sections to take.
 
-### Usage Example
+## Usage
+
+### Example
     auroracle.py --number 5 --term fall15 --must MATH-1500 CHEM-1500 --would BIOL-3290 FREN-1152 COMP-1010
     
-    ARGUMENTS GUIDE
-    number  : Number of courses you are taking
-    term    : The term in which you are taking them. (ex. fall15, winter16, summer16, fal16)
-    must    : The courses you must take. Obviously shouldn't be larger than n.
-    would   : The courses you would take as electives.
-    offline : If this argument is provided, offline mode is enabled. See the source for more info.
-    earliest: The earliest time you could stand being in class at. (Format: "10:00 PM")
-    latest  : The latest time you could stand being in class at.   (Format: "10:00 PM")
+### Arguments
+
+Argument  | Function
+---|---
+`--number`  | Number of courses you are taking
+`--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fal16)
+`--must`    | The courses you must take. Obviously shouldn't be larger than n.
+`--would`   | The courses you would take as electives.
+`--offline` | If this argument is provided, offline mode is enabled. See the source for more info.
+`--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM")
+`--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM")
     
-    For --must and --would, you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"
+*For --must and --would, you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"*
 
 An example of input and output can be seen in the **example-output.txt** file. Eventually the output will be viewable as a day-by-day schedule, perhaps if I make a web GUI for this utility.
 
