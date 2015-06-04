@@ -66,14 +66,19 @@ def get_course(name, term, offlinemode):
     # This tedium is a direct result of (a) aurora's strange HTML and
     # (b) python's poor HTML parsing support.
     last_title = ""
-    print(html.findall(".//table[@summary='This layout table is used to present the sections found']/tbody/tr"))
-    exit()
-    for i,node in enumerate(html.iterfind(".//table[@summary='This layout table is used to present the sections found']/tbody/tr")):
+    
+    # Downloaded HTML files may use tbody elements from the browser.
+    if len(html.findall(".//table[@summary='This layout table is used to present the sections found']/tr")) == 0:
+        tbody_string = "tbody/"
+    else:
+        tbody_string = ""
+    
+    for node in html.iterfind(".//table[@summary='This layout table is used to present the sections found']/"+tbody_string+"tr"):
         title = node.find("./th/a")
         if title != None: # It's a title node
             last_title = title.text
         else:          # It's a section node
-            nodes[last_title] = node.find("./td/table/tbody/tr[2]")
+            nodes[last_title] = node.find("./td/table/"+tbody_string+"tr[2]")
     
     for title,tablenode in nodes.items():
         section_num = title[-3:]
@@ -88,8 +93,6 @@ def get_course(name, term, offlinemode):
                 course.haslab = True
                 course.lab = Course(course.name + "LAB")
             course.lab.sections.append(Section(section_num, section_time, section_day, course))
-    
-   #debug print("SIZE: " + str(len(course.sections)))
     return course
 
 
