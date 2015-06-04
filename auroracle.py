@@ -15,6 +15,8 @@ from math import factorial
 from lib.sorting import quicksort_sections
 from lib.classes import Section,Course
 
+DEBUG = False
+
 terms = {
 "fall15":"201590",
 "winter16":"201610",
@@ -24,6 +26,9 @@ terms = {
 "summer17":"201750"
 }
 
+def dprint(text):
+    if DEBUG:
+        print(text)
 
 def print_calendar(comb):
     print("*********************  CALENDER  **********************")
@@ -52,19 +57,12 @@ def print_calendar(comb):
     
     # Convert to iterators
     day_iters = [iter(l) for l in day_lists]
-    
-    """mon_sections = iter(mon_sections)
-    tues_sections = iter(tues_sections)
-    wed_sections = iter(wed_sections)
-    thurs_sections = iter(thurs_sections)
-    fri_sections = iter(fri_sections)
-    day_iterators = [mon_sections,tues_sections,wed_sections,thurs_sections,fri_sections]
-"""
+
     still_printing = True
     while still_printing:
-        l1 = ""
-        l2 = ""
-        l3 = ""
+        l1 = "" #line 1
+        l2 = "" #line 2
+        l3 = "" #line 3
         stops = 0 # number of times nothing was printed
         print("|---------||---------||---------||---------||---------|")
         for day_iter in day_iters:
@@ -115,11 +113,11 @@ def get_course(name, term, earliest, latest, offlinemode):
         dpath = "cache/"+term+"/"
         fpath = dpath + subj+"-"+crse+".html"
         if os.path.exists(fpath):
-            print("! Fetching from cache: "+subj+"-"+crse)
+            dprint("! Fetching from cache: "+subj+"-"+crse)
             with open(fpath) as f:
                 html = esoup.parse(f)
         else:
-            print("! Fetching from Aurora: "+subj+"-"+crse)
+            dprint("! Fetching from Aurora: "+subj+"-"+crse)
             url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
             
             request = urllib2.Request(url)
@@ -256,10 +254,10 @@ def generate_valid_combinations(courselist):
                 valid_combs.append(section_comb)
                 
                 # Printing to console
-                print("\n\n\n\n\n")
                 print_section_comb(section_comb)
                 print("\n")
                 print_calendar(section_comb)
+                print("\n\n\n\n\n")
     except StopIteration:
         pass
     return valid_combs
@@ -320,7 +318,4 @@ if __name__ == "__main__":
         print("No courses could be generated. Perhaps your request was too specific?")
     else:
         print("Generated "+str(len(valid_combs))+" schedules.")
-            
-            
-            
             
