@@ -8,6 +8,8 @@ import urllib2
 import lib.ElementSoup as esoup
 import itertools
 import argparse
+import re
+from math import factorial
 
 from lib.sorting import quicksort_sections
 from lib.classes import Section,Course
@@ -45,7 +47,7 @@ def print_section_comb(sections):
 """
     Retrieves the course from Aurora.
 """
-def get_course(name, term, offlinemode):
+def get_course(name, term, earliest, latest, offlinemode):
     name = name.upper()
     course = Course(name)
     subj,crse = name.split(" ")
@@ -81,48 +83,77 @@ def get_course(name, term, offlinemode):
             nodes[last_title] = node.find("./td/table/"+tbody_string+"tr[2]")
     
     for title,tablenode in nodes.items():
+        # Section
         section_num = title[-3:]
         
-        section_time = tablenode.find("./td[2]").text
+        # Only allow courses and labs
+        if not (section_num[0] == "A" or section_num[0] == "B"):
+            continue
+        
+        # Day
         section_day = tablenode.find("./td[3]").text
+        
+        # Time
+        
+        section_time = tablenode.find("./td[2]").text
+        times = re.split(" *- *", section_time)
+        start_time = time.strptime(times[0], "%I:%M %p")
+        end_time = time.strptime(times[1], "%I:%M %p")
+        
+        # Earliest / latest checking
+        if (earliest and (start_time < earliest)) or (latest and (end_time > latest)):
+            continue
+        # It's a course
         if section_num[0] == "A":
-            course.sections.append(Section(section_num, section_time, section_day, course))
+            course.sections.append(Section(section_num, start_time, end_time, section_day, course))
+            
+        # It's a lab
         elif section_num[0] == "B":
             #create lab if not exists
             if not course.haslab:
                 course.haslab = True
                 course.lab = Course(course.name + "LAB")
-            course.lab.sections.append(Section(section_num, section_time, section_day, course))
+            course.lab.sections.append(Section(section_num, start_time, end_time, section_day, course))
     return course
 
 
     """
     MAIN FUNCTION
     """
-def get_valid_combs(number, term_string, m_course_strings, p_course_strings, offlinemode):
+def get_valid_combs(number, term_string, m_course_strings, p_course_strings, earliest, latest, offlinemode):
     valid_combs = []
-    m_courses = []
-    p_courses = []
+    m_courses = []   # A list of all mandatory courses. All are included in each iteration below.
+    p_courses = []   # A list of all potential courses. Used to fill up remaining spots, though all combinations are exausted.
     
     for coursename in m_course_strings:
-        course = get_course(coursename, term_string, offlinemode)
-        if course != None:
-            m_courses.append(course)
+        course = get_course(coursename, term_string, earliest, latest, offlinemode)
+        m_courses.append(course)
     for coursename in p_course_strings:
-        course = get_course(coursename, term_string, offlinemode)
-        if course != None:
-            p_courses.append(course)
-        
-                
+        course = get_course(coursename, term_string, earliest, latest, offlinemode)
+        p_courses.append(course)
+
     p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
-    for p_comb in p_combs:                                             # for each way to combine the potential courses
-        courselist = list(p_comb) + m_courses                           # set of n courses to take
+    
+    if len(p_courses) + len(m_courses) < number:
+        print("The number of courses specified does not match the number desired.")
+        exit()
+    
+    # This is just looping nCr times, so the length of p_combs.
+    n = len(p_courses)
+    r = number-len(m_courses)
+    for i in range(factorial(n) // factorial(r) // factorial(n-r)):
+        courselist = list(next(p_combs)) + m_courses
+        for i in courselist:
+            print(i.name)
+        print('----')
         assert(number == len(courselist)) #debugging
+
         
         combs = generate_valid_combinations(courselist)               # (local) list of possible combinations of courses.
         for comb in combs:
             if len(comb) > 0:
                 valid_combs.append(comb)
+        
     return valid_combs
 
 
@@ -179,6 +210,8 @@ if __name__ == "__main__":
     parser.add_argument('-m', '--must', nargs='+')
     parser.add_argument('-w', '--would', nargs='+')
     parser.add_argument('-o', '--offline',  action='store_true')
+    parser.add_argument('-e', '--earliest')
+    parser.add_argument('-l', '--latest')
     args = parser.parse_args()
     
     if not args.must:
@@ -191,7 +224,13 @@ if __name__ == "__main__":
     # Convert termnames
     args.term = terms[args.term]
     
-    valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.offline)
+    # Earliest / latest
+    if args.earliest:
+        args.earliest = time.strptime(args.earliest, "%I:%M %p")
+    if args.latest:
+        args.latest = time.strptime(args.latest, "%I:%M %p")
+    
+    valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.earliest, args.latest, args.offline)
     print("Completed.")
             
             

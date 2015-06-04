@@ -1,4 +1,4 @@
-import re,time
+
 
 class Course:
 
@@ -19,15 +19,12 @@ class Section:
     
     
 
-    def __init__(self, name, time_string, day, root_course=None):
+    def __init__(self, name, start_time, end_time, day, root_course=None):
         
         self.name = name
         self.day = day
-        
-        times = re.split(" *- *", time_string)
-        self.start_time = times[0]
-        self.start_time = time.strptime(times[0], "%I:%M %p")
-        self.end_time = time.strptime(times[1], "%I:%M %p")
+        self.start_time = start_time
+        self.end_time = end_time
         
         self.root_course = root_course #** In practice, this is set later
     
