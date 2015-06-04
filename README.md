@@ -34,7 +34,7 @@ It will then generate potential course schedules, detailing which sections to ta
 ## Disclaimer
 Aurora/the university may or may not care about light web scraping from students. I have yet to hear back. As it stands now, I take no responsibility if you get into trouble using this utility.
 
-Also note that because of the large amounts of time between when course schedules are typically made, the HTML structure on Aurora is likely to change, and this utility is bound to break.  Please feel free to email me at any time if the utility isn't working (sam@shelt.ca), or even submit a fix via a pull request.
+Also note that because of the large amounts of time between when course schedules are typically made, the HTML structure on Aurora could potentially change, and this utility might break as a result.  Please feel free to email me at any time if the utility isn't working (sam@shelt.ca), or even submit a fix via a pull request.
 
 
 ## TODO
