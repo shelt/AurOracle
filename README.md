@@ -21,7 +21,7 @@ It will then generate potential course schedules, detailing which sections to ta
 ## Usage
 
 ### Example
-    auroracle.py --number 5 --term fall15 --must MATH-1500 CHEM-1500 --would BIOL-3290 FREN-1152 COMP-1010
+    auroracle.py --number 5 --term fall15 --must MATH-1500 CHEM-1310 --would BIOL-3290 FREN-1152 COMP-1010
     
 ### Arguments
 
