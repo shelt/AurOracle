@@ -25,13 +25,76 @@ terms = {
 }
 
 
+def print_calendar(comb):
+    print("*********************  CALENDER  **********************")
+    print("| MONDAY  || TUESDAY ||WEDNESDAY||THURSDAY || FRIDAY  |")
+    
+    # Create day lists (the columns of the calendar)
+    mon_sections = []
+    tues_sections = []
+    wed_sections = []
+    thurs_sections = []
+    fri_sections = []
+    for section in comb:
+        if "M" in section.day:
+            mon_sections.append(section)
+        if "T" in section.day:
+            tues_sections.append(section)
+        if "W" in section.day:
+            wed_sections.append(section)
+        if "R" in section.day:
+            thurs_sections.append(section)
+        if "F" in section.day:
+            fri_sections.append(section)
+    
+    # Sort
+    day_lists = [quicksort_sections(l) for l in [mon_sections,tues_sections,wed_sections,thurs_sections,fri_sections]]
+    
+    # Convert to iterators
+    day_iters = [iter(l) for l in day_lists]
+    
+    """mon_sections = iter(mon_sections)
+    tues_sections = iter(tues_sections)
+    wed_sections = iter(wed_sections)
+    thurs_sections = iter(thurs_sections)
+    fri_sections = iter(fri_sections)
+    day_iterators = [mon_sections,tues_sections,wed_sections,thurs_sections,fri_sections]
+"""
+    still_printing = True
+    while still_printing:
+        l1 = ""
+        l2 = ""
+        l3 = ""
+        stops = 0 # number of times nothing was printed
+        print("|---------||---------||---------||---------||---------|")
+        for day_iter in day_iters:
+            try:
+                section = day_iter.next()
+                l1day = section.root_course.name.ljust(9)
+                l2day = section.name.center(9)
+                l3day = time.strftime("%I:%M %p",section.start_time).center(9)
+            except StopIteration:
+                stops+=1
+                l1day = "         "
+                l2day = "         "
+                l3day = "         "
+            l1 += "|" + l1day + "|"
+            l2 += "|" + l2day + "|"
+            l3 += "|" + l3day + "|"
+        if(stops == 5):
+            still_printing = False
+        if still_printing:
+            print(l1)
+            print(l2)
+            print(l3)
+
+
 """
     Prints an iterable of sections.
 """
 def print_section_comb(sections):
-    sorted_sections = quicksort_sections(list(sections))
-    print("-----------")
-    for section in sorted_sections:
+    print("**************  SCHEDULE  *******************")
+    for section in sections:
         print(section.root_course.name + " : " + section.name + "    " + time.strftime("%I:%M %p",section.start_time) + " - " + time.strftime("%I:%M %p",section.end_time) + "    " + section.day)
 
 """
@@ -122,7 +185,7 @@ def get_course(name, term, earliest, latest, offlinemode):
             #create lab if not exists
             if not course.haslab:
                 course.haslab = True
-                course.lab = Course(course.name + "LAB")
+                course.lab = Course(course.name)
             course.lab.sections.append(Section(section_num, start_time, end_time, section_day, course))
     return course
 
@@ -191,7 +254,12 @@ def generate_valid_combinations(courselist):
             section_comb = next(section_combs)
             if is_valid_combination(section_comb):
                 valid_combs.append(section_comb)
+                
+                # Printing to console
+                print("\n\n\n\n\n")
                 print_section_comb(section_comb)
+                print("\n")
+                print_calendar(section_comb)
     except StopIteration:
         pass
     return valid_combs
