@@ -13,7 +13,9 @@ Give the utility the following:
 It will then generate potential course combinations.
 
 ### Usage Example
-    auroracle.py --number 5 --term f15 --must MATH-1500 CHEM-1500 --would BIOL-3290 FREN-1152 COMP-1010
+<<<<<<< HEAD
+    auroracle.py --number 5 --term fall15 --must MATH-1500 CHEM-1500 --would BIOL-3290 FREN-1152 COMP-1010
+>>>>>>> 5da9b320181b88b8cbe588b3deacc232057d0510
     
     ARGUMENTS GUIDE
     number  : Number of courses you are taking
@@ -27,6 +29,8 @@ It will then generate potential course combinations.
 
 ## Disclaimer
 Aurora/the university may or may not care about light web scraping from students. I have yet to hear back. As it stands now, I take no responsibility if you get into trouble using this utility.
+
+Also note that because of the large amounts of time between when course schedules are typically made, the HTML structure on Aurora is likely to change, and this utility is bound to break.  Please feel free to email me at any time if the utility isn't working (sam@shelt.ca), or even submit a fix via a pull request.
 
 
 ## TODO

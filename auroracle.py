@@ -4,7 +4,7 @@
 # Written by Sam Shelton (sam@shelt.ca)
 
 import time
-import urllib
+import urllib2
 import lib.ElementSoup as esoup
 import itertools
 import argparse
@@ -53,15 +53,21 @@ def get_course(name, term, offlinemode):
     if offlinemode:
         html = esoup.parse("offline/" + name + ".html")
     else:
-        url = "https://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
-        html = esoup.parse(urllib.urlopen(url))
+        url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
         
+        request = urllib2.Request(url)
+        request.add_header('User-Agent', "Mozilla/5.0 (X11; U; Linux i686) AppleWebKit/536.16 (KHTML, like Gecko) Chrome/35.0.2049.59 Safari/536.16")
+        request.add_header('Referer', "https://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
+        response = urllib2.urlopen(request)
+        html = esoup.parse(response)
     
     nodes = {}
     # This loop builds a dict associating titles to section nodes.
     # This tedium is a direct result of (a) aurora's strange HTML and
     # (b) python's poor HTML parsing support.
     last_title = ""
+    print(html.findall(".//table[@summary='This layout table is used to present the sections found']/tbody/tr"))
+    exit()
     for i,node in enumerate(html.iterfind(".//table[@summary='This layout table is used to present the sections found']/tbody/tr")):
         title = node.find("./th/a")
         if title != None: # It's a title node
@@ -113,7 +119,7 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, off
         combs = generate_valid_combinations(courselist)               # (local) list of possible combinations of courses.
         for comb in combs:
             if len(comb) > 0:
-                valid_combs.append(valid_comb)
+                valid_combs.append(comb)
     return valid_combs
 
 
@@ -172,6 +178,10 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--offline',  action='store_true')
     args = parser.parse_args()
     
+    if not args.must:
+        args.must = []
+    if not args.would:
+        args.would = []
     args.must = [i.replace("-", " ") for i in args.must]
     args.would = [i.replace("-", " ") for i in args.would]
     
