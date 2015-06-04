@@ -179,7 +179,6 @@ def generate_valid_combinations(courselist):
     
     section_combs = itertools.product(*s_lists)                     # set of tuples of ways to combine courses by section
     
-    
     try:
         while True:
             section_comb = next(section_combs)
