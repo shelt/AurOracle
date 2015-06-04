@@ -33,8 +33,6 @@ terms = {
 }
 
 
-
-#TODO multiple entries in meeting times?
 """
     Prints an iterable of sections.
 """
@@ -143,9 +141,6 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, ear
     r = number-len(m_courses)
     for i in range(factorial(n) // factorial(r) // factorial(n-r)):
         courselist = list(next(p_combs)) + m_courses
-        for i in courselist:
-            print(i.name)
-        print('----')
         assert(number == len(courselist)) #debugging
 
         
@@ -230,6 +225,7 @@ if __name__ == "__main__":
         args.latest = time.strptime(args.latest, "%I:%M %p")
     
     valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.earliest, args.latest, args.offline)
+    # Something can then be done with valid_combs, such as saving to file.
     print("Completed.")
             
             
