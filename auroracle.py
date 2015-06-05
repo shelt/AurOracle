@@ -163,7 +163,7 @@ def get_course(name, term, earliest, latest, offlinemode):
         
         # Day
         section_day = tablenode.find("./td[3]").text
-        if not section_day or "TBD" in section_day:
+        if not section_day or ("TBD" in section_day) or ("TBA" in section_day):
             continue
         
         # Time
