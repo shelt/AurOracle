@@ -163,10 +163,14 @@ def get_course(name, term, earliest, latest, offlinemode):
         
         # Day
         section_day = tablenode.find("./td[3]").text
+        if not section_day or "TBD" in section_day:
+            continue
         
         # Time
         
         section_time = tablenode.find("./td[2]").text
+        if not section_time:
+            continue
         times = re.split(" *- *", section_time)
         start_time = time.strptime(times[0], "%I:%M %p")
         end_time = time.strptime(times[1], "%I:%M %p")
