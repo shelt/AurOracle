@@ -31,7 +31,7 @@ def dprint(text):
         print(text)
 
 def print_calendar(comb):
-    print("*********************  CALENDER  **********************")
+    print("*********************  CALENDAR  **********************")
     print("| MONDAY  || TUESDAY ||WEDNESDAY||THURSDAY || FRIDAY  |")
     
     # Create day lists (the columns of the calendar)
@@ -207,11 +207,11 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, ear
         course = get_course(coursename, term_string, earliest, latest, offlinemode)
         p_courses.append(course)
 
-    p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
     
-    if len(p_courses) + len(m_courses) < number:
+    if (len(p_courses) + len(m_courses) < number or len(m_courses) > number):
         print("The number of courses specified does not match the number desired.")
         exit()
+    p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
     
     # This is just looping nCr times, so the length of p_combs.
     n = len(p_courses)
