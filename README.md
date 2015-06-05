@@ -32,12 +32,14 @@ Argument  | Function
 `--number`  | Number of courses you are taking
 `--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fal16)
 `--must`    | The courses you must take. Obviously shouldn't be larger than `--number` value.
-`--would`   | The courses you would take as electives. (optional)
-`--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM")
-`--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM")
+`--would`   | The courses you would take as electives to fill the remaining spots (optional)
+`--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
+`--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
 `--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
     
-*For --must and --would, you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"*
+*For course names you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"*
+
+
 
 An example of input and output can be seen in the [example-output.txt](example-output.txt) file. Eventually the output will be viewable as a day-by-day schedule, perhaps if I make a web GUI for this utility.
 
@@ -59,6 +61,7 @@ Also note that because of the large amounts of time between when course schedule
 ## TODO
 * Implement a cannot-attend-on-these-days feature.
 * Have the script recognize when classes are full.
+* Implement the ability to specify a single section (or range of sections) that you need to be in for a particular course.
 * More user error handling
 * out to file
 * Some departments (such as math) limit which lab you can take with which lecture section.
