@@ -59,10 +59,8 @@ Also note that because of the large amounts of time between when course schedule
 ## TODO
 * Implement a cannot-attend-on-these-days feature.
 * Have the script recognize when classes are full.
-* Make the output create a monday list, tuesday list, etc.
-* caching
 * More user error handling
 * out to file
-* Some departments such as math limit which lab you can take with which lecture section.
+* Some departments (such as math) limit which lab you can take with which lecture section.
 * Verify that course sections with multiple entries in meeting times (such as CS) are handled correctly
 * Verify that other things in meeting times (such as finals) are handled correctly
