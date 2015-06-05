@@ -292,7 +292,7 @@ if __name__ == "__main__":
     
     # Error checking
     if not args.number:
-        print("You must specify a number of courses desired. (--number n)")
+        print("You must specify a number of courses desired. \nExample: '--number 5'")
         exit()
     if not args.must and not args.would:
         print("You must specify at least one course.")
@@ -307,6 +307,10 @@ if __name__ == "__main__":
     args.would = [i.replace("-", " ") for i in args.would]
     
     # Convert term names
+    
+    if not args.term:
+        print("You must specify an academic term. \nExample: '--term winter16'")
+        exit()
     args.term = terms[args.term]
     
     # Earliest / latest time parsing
