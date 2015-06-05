@@ -26,13 +26,26 @@ terms = {
 "summer17":"201750"
 }
 
-def dprint(text):
-    if DEBUG:
-        print(text)
+"""
+    A wrapper for print() adding
+    verbosity checking and printing
+    to file if specified.
+"""
+def print_out(text, verbose=False):
+    if verbose and not args.verbose:
+        return
+        
+    # Console out
+    print(text)
+    
+    # File out
+    if args.file and isinstance(args.file, file):
+        print >> args.file, text
+    
 
 def print_calendar(comb):
-    print("*********************  CALENDAR  **********************")
-    print("| MONDAY  || TUESDAY ||WEDNESDAY||THURSDAY || FRIDAY  |")
+    print_out("*********************  CALENDAR  **********************")
+    print_out("| MONDAY  || TUESDAY ||WEDNESDAY||THURSDAY || FRIDAY  |")
     
     # Create day lists (the columns of the calendar)
     mon_sections = []
@@ -64,7 +77,7 @@ def print_calendar(comb):
         l2 = "" #line 2
         l3 = "" #line 3
         stops = 0 # number of times nothing was printed
-        print("|---------||---------||---------||---------||---------|")
+        print_out("|---------||---------||---------||---------||---------|")
         for day_iter in day_iters:
             try:
                 section = day_iter.next()
@@ -82,18 +95,18 @@ def print_calendar(comb):
         if(stops == 5):
             still_printing = False
         if still_printing:
-            print(l1)
-            print(l2)
-            print(l3)
+            print_out(l1)
+            print_out(l2)
+            print_out(l3)
 
 
 """
     Prints an iterable of sections.
 """
 def print_section_comb(sections):
-    print("**************  SCHEDULE  *******************")
+    print_out("**************  SCHEDULE  *******************")
     for section in sections:
-        print(section.root_course.name + " : " + section.name + "    " + time.strftime("%I:%M %p",section.start_time) + " - " + time.strftime("%I:%M %p",section.end_time) + "    " + section.day)
+        print_out(section.root_course.name + " : " + section.name + "    " + time.strftime("%I:%M %p",section.start_time) + " - " + time.strftime("%I:%M %p",section.end_time) + "    " + section.day)
 
 """
     Retrieves the course from Aurora.
@@ -113,11 +126,11 @@ def get_course(name, term, earliest, latest, offlinemode):
         dpath = "cache/"+term+"/"
         fpath = dpath + subj+"-"+crse+".html"
         if os.path.exists(fpath):
-            dprint("! Fetching from cache: "+subj+"-"+crse)
+            print_out("! Fetching from cache: "+subj+"-"+crse , verbose=True)
             with open(fpath) as f:
                 html = esoup.parse(f)
         else:
-            dprint("! Fetching from Aurora: "+subj+"-"+crse)
+            print_out("! Fetching from Aurora: "+subj+"-"+crse , verbose=True)
             url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
             
             request = urllib2.Request(url)
@@ -209,7 +222,7 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, ear
 
     
     if (len(p_courses) + len(m_courses) < number or len(m_courses) > number):
-        print("The number of courses specified does not match the number desired.")
+        print_out("The number of courses specified does not match the number desired.")
         exit()
     p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
     
@@ -259,9 +272,9 @@ def generate_valid_combinations(courselist):
                 
                 # Printing to console
                 print_section_comb(section_comb)
-                print("\n")
+                print_out("\n")
                 print_calendar(section_comb)
-                print("\n\n\n\n\n")
+                print_out("\n\n\n\n\n")
     except StopIteration:
         pass
     return valid_combs
@@ -286,16 +299,18 @@ if __name__ == "__main__":
     parser.add_argument('-m', '--must', nargs='+')
     parser.add_argument('-w', '--would', nargs='+')
     parser.add_argument('-o', '--offline',  action='store_true')
+    parser.add_argument('-v', '--verbose',  action='store_true')
+    parser.add_argument('-f', '--file')
     parser.add_argument('-e', '--earliest')
     parser.add_argument('-l', '--latest')
     args = parser.parse_args()
     
     # Error checking
     if not args.number:
-        print("You must specify a number of courses desired. \nExample: '--number 5'")
+        print_out("You must specify a number of courses desired. \nExample: '--number 5'")
         exit()
     if not args.must and not args.would:
-        print("You must specify at least one course.")
+        print_out("You must specify at least one course.")
         exit()
     
     # Course parsing
@@ -307,9 +322,8 @@ if __name__ == "__main__":
     args.would = [i.replace("-", " ") for i in args.would]
     
     # Convert term names
-    
     if not args.term:
-        print("You must specify an academic term. \nExample: '--term winter16'")
+        print_out("You must specify an academic term. \nExample: '--term winter16'")
         exit()
     args.term = terms[args.term]
     
@@ -319,11 +333,17 @@ if __name__ == "__main__":
     if args.latest:
         args.latest = time.strptime(args.latest, "%I:%M %p")
     
+    # File out
+    if args.file:
+        if os.path.dirname(args.file) and not os.path.exists(os.path.dirname(args.file)):
+            os.makedirs(os.path.dirname(args.file))
+        args.file = file(args.file,'w')
+    
+    # Main call
     valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.earliest, args.latest, args.offline)
-    # Something can then be done with valid_combs, such as saving to file.
     
     if len(valid_combs) == 0:
-        print("No courses could be generated. Perhaps your request was too specific?")
+        print_out("No courses could be generated. Perhaps your request was too specific?")
     else:
-        print("Generated "+str(len(valid_combs))+" schedules.")
+        print_out("Generated "+str(len(valid_combs))+" schedules.")
             

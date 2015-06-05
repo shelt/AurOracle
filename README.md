@@ -36,6 +36,7 @@ Argument  | Function
 `--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
 `--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
+`--file`    | The file in which to write all output. (optional)
     
 *For course names you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"*
 
