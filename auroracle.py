@@ -12,7 +12,8 @@ import argparse
 import re
 from math import factorial
 
-from lib.sorting import quicksort_sections,squish,get_sorted_daylists
+from lib.sorting import quicksort_sections,get_sorted_daylists
+from lib.sorting import compress,prefer_free
 from lib.classes import Section,Course
 
 DEBUG = False
@@ -27,25 +28,20 @@ terms = {
 }
 
 """
-    A wrapper for print() adding
-    verbosity checking and printing
-    to file if specified.
+    The function to print schedule data
+    to the outfile. Debug and error messages
+    instead use print().
 """
-def print_out(text, verbose=False):
-    if verbose and not args.verbose:
-        return
-        
-    # Console out
-    print(text)
+def print_write(text, verbose=False):
+    print >> outfile, text
     
-    # File out
-    if args.file and isinstance(args.file, file):
-        print >> args.file, text
-    
-
+"""
+    Print a combination of courses to the
+    outfile as a calendar.
+"""
 def print_calendar(comb):
-    print_out("*********************  CALENDAR  **********************")
-    print_out("| MONDAY  || TUESDAY ||WEDNESDAY||THURSDAY || FRIDAY  |")
+    print_write("*********************  CALENDAR  **********************")
+    print_write("| MONDAY  || TUESDAY ||WEDNESDAY||THURSDAY || FRIDAY  |")
     
     # Create day lists (the columns of the calendar)
     day_lists = get_sorted_daylists(comb)
@@ -59,7 +55,7 @@ def print_calendar(comb):
         l2 = "" #line 2
         l3 = "" #line 3
         stops = 0 # number of times nothing was printed
-        print_out("|---------||---------||---------||---------||---------|")
+        print_write("|---------||---------||---------||---------||---------|")
         for day_iter in day_iters:
             try:
                 section = day_iter.next()
@@ -77,18 +73,19 @@ def print_calendar(comb):
         if(stops == 5):
             still_printing = False
         if still_printing:
-            print_out(l1)
-            print_out(l2)
-            print_out(l3)
+            print_write(l1)
+            print_write(l2)
+            print_write(l3)
 
 
 """
-    Prints an iterable of sections.
+    Prints a combination of sections
+    to the outfile.
 """
-def print_section_comb(sections):
-    print_out("**************  SCHEDULE  *******************")
-    for section in sections:
-        print_out(section.root_course.name + " : " + section.name + "    " + time.strftime("%I:%M %p",section.start_time) + " - " + time.strftime("%I:%M %p",section.end_time) + "    " + section.day)
+def print_section_comb(comb):
+    print_write("**************  SCHEDULE  *******************")
+    for section in comb:
+        print_write(section.root_course.name + " : " + section.name + "    " + time.strftime("%I:%M %p",section.start_time) + " - " + time.strftime("%I:%M %p",section.end_time) + "    " + section.day)
 
 """
     Retrieves the course from Aurora.
@@ -108,11 +105,9 @@ def get_course(name, term, earliest, latest, offlinemode):
         dpath = "cache/"+term+"/"
         fpath = dpath + subj+"-"+crse+".html"
         if os.path.exists(fpath):
-            print_out("! Fetching from cache: "+subj+"-"+crse , verbose=True)
             with open(fpath) as f:
                 html = esoup.parse(f)
         else:
-            print_out("! Fetching from Aurora: "+subj+"-"+crse , verbose=True)
             url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
             
             request = urllib2.Request(url)
@@ -204,7 +199,7 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, ear
 
     
     if (len(p_courses) + len(m_courses) < number or len(m_courses) > number):
-        print_out("The number of courses specified does not match the number desired.")
+        print_write("The number of courses specified does not match the number desired.")
         exit()
     p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
     
@@ -251,13 +246,6 @@ def generate_valid_combinations(courselist):
             section_comb = next(section_combs)
             if is_valid_combination(section_comb):
                 valid_combs.append(section_comb)
-                
-                if not args.advanced:
-                    # Printing to console
-                    print_section_comb(section_comb)
-                    print_out("\n")
-                    print_calendar(section_comb)
-                    print_out("\n\n\n\n\n")
     except StopIteration:
         pass
     return valid_combs
@@ -279,22 +267,31 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', '--number', type=int)
     parser.add_argument('-t', '--term')
+    
+    parser.add_argument('-f', '--file')
+    
     parser.add_argument('-m', '--must', nargs='+')
     parser.add_argument('-w', '--would', nargs='+')
+    
     parser.add_argument('-o', '--offline',  action='store_true')
     parser.add_argument('-v', '--verbose',  action='store_true')
-    parser.add_argument('-f', '--file')
+
     parser.add_argument('-e', '--earliest')
     parser.add_argument('-l', '--latest')
-    parser.add_argument('-a', '--advanced', action='store_true')
+    
+    # Optimization args
+    parser.add_argument('--prefer-free-days', action='store_true')
+    parser.add_argument('--no-compression', action='store_true')
+    
+    
     args = parser.parse_args()
     
     # Error checking
     if not args.number:
-        print_out("You must specify a number of courses desired. \nExample: '--number 5'")
+        print("You must specify a number of courses desired. \nExample: '--number 5'")
         exit()
     if not args.must and not args.would:
-        print_out("You must specify at least one course.")
+        print("You must specify at least one course.")
         exit()
     
     # Course parsing
@@ -307,7 +304,7 @@ if __name__ == "__main__":
     
     # Convert term names
     if not args.term:
-        print_out("You must specify an academic term. \nExample: '--term winter16'")
+        print("You must specify an academic term. \nExample: '--term winter16'")
         exit()
     args.term = terms[args.term]
     
@@ -319,25 +316,43 @@ if __name__ == "__main__":
     
     # File out
     if args.file:
+        args.file = args.file.replace(".txt","") + ".out.txt"
         if os.path.dirname(args.file) and not os.path.exists(os.path.dirname(args.file)):
             os.makedirs(os.path.dirname(args.file))
-        args.file = file(args.file,'w')
+        outfile = file(args.file,'w')
+    else:
+        # Construct name
+        args.file = " ".join(args.must + args.would)
+        args.file = args.file[:250] + (args.file[250:] and '..')
+        args.file = args.file.replace(" ","-") + ".out.txt"
+        outfile = file(args.file, 'w')
     
     # Main call
+    print("Generating schedules...")
     valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.earliest, args.latest, args.offline)
-    
-    if args.advanced:
-        valid_combs = squish(valid_combs)
-        for comb in valid_combs:
-            print_section_comb(comb)
-            print_out("\n")
-            print_calendar(comb)
-            print_out("\n\n\n\n\n")
-        print_out("The schedules are sorted by quality from the bottom up.")
-    
-    
     if len(valid_combs) == 0:
-        print_out("No courses could be generated. Perhaps your request was too specific?")
-    else:
-        print_out("Generated "+str(len(valid_combs))+" schedules.")
-            
+        print("No courses could be generated. Perhaps your request was too specific?")
+        exit()
+    
+    # Pre-schedule output
+    print_write("- Generated "+str(len(valid_combs))+" schedules.")
+    
+    # Optimization
+    print("Optimizing...")
+    if not args.no_compression:
+        valid_combs = compress(valid_combs)
+        print_write("- These schedules are sorted by most compression to least compression.")
+    if args.prefer_free_days:
+        valid_combs = prefer_free(valid_combs)
+        print_write("- Schedules with free days are listed first. (--prefer-free-days)")
+    
+    # Schedule output
+    print("Writing to file...")
+    print_write("\n\n")
+    for comb in valid_combs:
+        print_section_comb(comb)
+        print_write("\n")
+        print_calendar(comb)
+        print_write("\n\n\n\n\n")
+    print("Completed. Outputted to \"" + args.file + "\"")
+        

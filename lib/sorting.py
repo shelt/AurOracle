@@ -1,3 +1,4 @@
+from calendar import timegm
 """
     Convert a combination of
     sections to a list containing
@@ -86,30 +87,59 @@ def partition(nlist,first,last):
 ##################
 """
     Sorts the section combinations by average distance
-    between sections in ascending order. I.e., the
-    most "squished" sections are at the bottom.
+    between sections in descending order. I.e., the
+    most "compressed" sections are at the top.
 """
-def squish(combs):
+def compress(combs):
     comb_avgs = {}   # (Combination of sections) : (avg time between sections)
     for comb in combs:
-        daylist = get_sorted_daylist(comb)
+        daylist = get_sorted_daylists(comb)
         
-        tdiff = 0 # Total difference between course starts and ends
-        count = 0 # Total differences (total sections - 1)
+        tdiff = 0    # Total difference between course starts and ends
+        count = 0    # Total differences (total sections - 1)
         
-        for day in daylists:
-            day.reverse()
+        for day in daylist:
             day = iter(day)
             
             x1 = day.next()
             try:
                 while True:
                     x2 = day.next()
-                    tdiff = (time.mktime(x2.start_time) - time.mktime(x1.end_time)) / 60
+                    tdiff = (timegm(x2.start_time) - timegm(x1.end_time)) / 60
                     count += 1
                     x1 = x2
             except StopIteration:
-                pass
+                break
         comb_avgs[comb] = tdiff / count
+    
+    sorted_combs_tuples = sorted(comb_avgs.iteritems(), key=lambda (k,v): (v,k))
+    
+    # Convert to list of combs
+    sorted_combs = []
+    for comb_tuple in sorted_combs_tuples:
+        sorted_combs.append(comb_tuple[0])
+    
+    return sorted_combs
+
+
+
+def prefer_free(combs):
+    comb_free = {}   # (Combination of sections) : number of days free
+    for comb in combs:
+        daylist = get_sorted_daylists(comb)
         
-    return sorted(comb_avgs.iteritems(), key=lambda (k,v): (v,k)).keys()
+        count = 0   # Total number of free days
+        
+        for day in daylist:
+            if len(day) == 0:
+                count += 1
+        comb_free[comb] = count
+    
+    sorted_combs_tuples = sorted(comb_free.iteritems(), key=lambda (k,v): (v,k), reverse=True)
+    
+    # Convert to list of combs
+    sorted_combs = []
+    for comb_tuple in sorted_combs_tuples:
+        sorted_combs.append(comb_tuple[0])
+    
+    return sorted_combs
