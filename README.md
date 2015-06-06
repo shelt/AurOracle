@@ -63,6 +63,25 @@ This utility uses **Python 2.7**.
 * Unzip to a directory.
 * Open a command line in that directory, and run `auroracle.py` followed by the arguments you want.
 
+## Benchmarking
+Some combinations of courses yield more potential schedules than others. The following are benchmarks of the time it took the utility to generate a large amount of schedules (297590).
+    
+    auroracle.py -n 3 -t fall15 -m COMP-1010 MATH-1300 ARTS-1110
+
+    x64 HP Pavillion laptop, 8GB RAM, 1.60 GHz (AMD a8-455M APU)
+    Generation:   214s
+    Optimization:  93s
+    Writing:      142s
+    TOTAL:        449s
+    
+    x64 desktop, 8GB RAM, 3.20 GHz (AMD Phenom II X6 1090T)
+    Generation:    56s
+    Optimization:  27s
+    Writing:       38s
+    TOTAL:        121s
+    
+    output file size: 356MB
+
 ## Disclaimer
 Aurora/the university may or may not care about light web scraping from students. I have yet to hear back. As it stands now, I take no responsibility if you get into trouble using this utility.
 
