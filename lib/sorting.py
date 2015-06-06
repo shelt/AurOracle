@@ -92,16 +92,19 @@ def partition(nlist,first,last):
 """
 def compress(combs):
     comb_avgs = {}   # (Combination of sections) : (avg time between sections)
+    singledays = []  # List of days that can't be compressed (have < 2 courses)
     for comb in combs:
         daylist = get_sorted_daylists(comb)
-        
         tdiff = 0    # Total difference between course starts and ends
         count = 0    # Total differences (total sections - 1)
         
         for day in daylist:
             day = iter(day)
             
-            x1 = day.next()
+            try:
+                x1 = day.next()
+            except StopIteration: # Free day
+                continue
             try:
                 while True:
                     x2 = day.next()
@@ -110,6 +113,9 @@ def compress(combs):
                     x1 = x2
             except StopIteration:
                 break
+        if count == 0: # No more than 1 course on each day
+            singledays.append(comb)
+            continue
         comb_avgs[comb] = tdiff / count
     
     sorted_combs_tuples = sorted(comb_avgs.iteritems(), key=lambda (k,v): (v,k))
@@ -119,7 +125,8 @@ def compress(combs):
     for comb_tuple in sorted_combs_tuples:
         sorted_combs.append(comb_tuple[0])
     
-    return sorted_combs
+    
+    return sorted_combs + singledays
 
 
 

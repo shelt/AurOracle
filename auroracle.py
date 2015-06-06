@@ -6,7 +6,8 @@
 import os
 import time
 import urllib2
-import lib.ElementSoup as esoup
+import lib.ElementSoup as esoup # Unused
+import lxml.html as lh
 import itertools
 import argparse
 import re
@@ -97,16 +98,16 @@ def get_course(name, term, earliest, latest, offlinemode):
     
     if offlinemode:
         try:
-            html = esoup.parse("offline/" + name + ".html")
+            html = lh.parse("offline/" + name + ".html")
         except IOError:
-            html = esoup.parse("offline/" + subj + "-" + crse + ".html")
+            html = lh.parse("offline/" + subj + "-" + crse + ".html")
     else:
         # Caching
         dpath = "cache/"+term+"/"
         fpath = dpath + subj+"-"+crse+".html"
         if os.path.exists(fpath):
             with open(fpath) as f:
-                html = esoup.parse(f)
+                html = lh.parse(f)
         else:
             url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
             
@@ -115,7 +116,7 @@ def get_course(name, term, earliest, latest, offlinemode):
             request.add_header('Referer', "https://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
             response = urllib2.urlopen(request)
             data = response.read()
-            html = esoup.parse(data, rawmode=True)
+            html =  lh.parse(response)
             
             # Add to cache
             if not os.path.exists(os.path.dirname(fpath)):
@@ -125,23 +126,34 @@ def get_course(name, term, earliest, latest, offlinemode):
             
     
     nodes = {}
-    # This loop builds a dict associating titles to section nodes.
-    # This tedium is a direct result of (a) aurora's strange HTML and
-    # (b) python's poor HTML parsing support.
-    last_title = ""
-    
-    # Downloaded HTML files may use tbody elements from the browser.
+    """
+        "nodes" refers to the entries in the section table.
+        The table looks like this:
+        <tr><th><a>section title</a></th></tr>
+        <tr><td><a>section body</td></tr>
+        ...
+        We find all title elements (tr/th/a) and
+        associate their titles to the bodies (tr/td)
+        (which are two levels up and one sibling down)
+        using the nodes dict.
+        
+        The elements on Aurora don't use IDs, so it's safest
+        to use the long summaries.
+    """
+    # Downloaded HTML files may have tbody elements inserted by the browser.
     if len(html.findall(".//table[@summary='This layout table is used to present the sections found']/tr")) == 0:
-        tbody_string = "tbody/"
+        tbody = "tbody/"
     else:
-        tbody_string = ""
+        tbody = ""
+    #################### major
     
-    for node in html.iterfind(".//table[@summary='This layout table is used to present the sections found']/"+tbody_string+"tr"):
-        title = node.find("./th/a")
-        if title != None: # It's a title node
-            last_title = title.text
-        else:          # It's a section node
-            nodes[last_title] = node.find("./td/table/"+tbody_string+"tr[2]")
+    # NODE EXTRACTION
+    titlenodes = html.xpath(".//table[@summary='This layout table is used to present the sections found']/"+tbody+"tr/th[@class='ddtitle']/a")
+    
+    for title_a in titlenodes:
+        body_tr = title_a.getparent().getparent().getnext() # From tr/th/a to tr/ and the next tr is the body of the entry.
+        tablenode = body_tr.xpath("./td/table[@summary='This table lists the scheduled meeting times and assigned instructors for this class..']/"+tbody+"tr[2]")[0]
+        nodes[title_a.text] = tablenode
     
     for title,tablenode in nodes.items():
         # Section
@@ -206,10 +218,10 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, ear
     # This is just looping nCr times, so the length of p_combs.
     n = len(p_courses)
     r = number-len(m_courses)
+    
     for i in range(factorial(n) // factorial(r) // factorial(n-r)):
         courselist = list(next(p_combs)) + m_courses
         assert(number == len(courselist)) #debugging
-
         
         combs = generate_valid_combinations(courselist)               # (local) list of possible combinations of courses.
         for comb in combs:
@@ -334,6 +346,7 @@ if __name__ == "__main__":
         print("No courses could be generated. Perhaps your request was too specific?")
         exit()
     
+    
     # Pre-schedule output
     print_write("- Generated "+str(len(valid_combs))+" schedules.")
     
@@ -345,7 +358,6 @@ if __name__ == "__main__":
     if args.prefer_free_days:
         valid_combs = prefer_free(valid_combs)
         print_write("- Schedules with free days are listed first. (--prefer-free-days)")
-    
     # Schedule output
     print("Writing to file...")
     print_write("\n\n")
