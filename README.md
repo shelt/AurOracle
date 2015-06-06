@@ -37,10 +37,11 @@ Argument  | Function
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
 `--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
 `--file`    | The file in which to write all output. (optional)
+`--advanced`| Run the utility in advanced mode. After generation is complete, schedules will be sorted by ostensible quality. Schedules will not be printed until generation is complete.
     
 *For course names you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"*
 
-
+If the utility isn't run with the `--advanced` flag, it will simply output the schedules rapidly as they are generated. The number of schedules generated can range from 10 to tens of thousands, the latter of which can take over 10 minutes. Since you probably don't need all permutations of every section, press Ctrl-C to stop generation at any time. (If you wish to have the results sorted by quality by running in advanced mode, however, you must wait until it completes.)
 
 An example of input and output can be seen in the [example-output.txt](example-output.txt) file. Eventually the output will be viewable as a day-by-day schedule, perhaps if I make a web GUI for this utility.
 
