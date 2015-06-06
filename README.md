@@ -41,6 +41,7 @@ Argument  | Function
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
 `--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
 `--file`    | Custom filename for the output file. (optional)
+`--cap`     | Caps the generation count. If the utility is taking over 10 minutes, you may want to set the cap to 100K-200K.
 
 #### Optimization options
 Argument  | Function

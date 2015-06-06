@@ -246,12 +246,15 @@ def generate_valid_combinations(courselist):
     
     
     section_combs = itertools.product(*s_lists)                     # set of tuples of ways to combine courses by section
-    
+    count = 0
     try:
         while True:
             section_comb = next(section_combs)
             if is_valid_combination(section_comb):
                 valid_combs.append(section_comb)
+            count += 1
+            if count >= args.cap:
+                break
     except StopIteration:
         pass
     return valid_combs
@@ -284,6 +287,8 @@ if __name__ == "__main__":
 
     parser.add_argument('-e', '--earliest')
     parser.add_argument('-l', '--latest')
+    
+    parser.add_argument('-c', '--cap', type=int)
     
     # Optimization args
     parser.add_argument('--prefer-free-days', action='store_true')
