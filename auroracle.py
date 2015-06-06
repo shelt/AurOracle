@@ -6,7 +6,6 @@
 import os
 import time
 import urllib2
-import lib.ElementSoup as esoup # Unused
 import lxml.html as lh
 import itertools
 import argparse
@@ -169,7 +168,6 @@ def get_course(name, term, earliest, latest, offlinemode):
             continue
         
         # Time
-        
         section_time = tablenode.find("./td[2]").text
         if not section_time:
             continue
@@ -209,10 +207,6 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, ear
         course = get_course(coursename, term_string, earliest, latest, offlinemode)
         p_courses.append(course)
 
-    
-    if (len(p_courses) + len(m_courses) < number or len(m_courses) > number):
-        print("The number of courses specified does not match the number desired.")
-        exit()
     p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
     
     # This is just looping nCr times, so the length of p_combs.
@@ -313,6 +307,11 @@ if __name__ == "__main__":
         args.would = []
     args.must = [i.replace("-", " ") for i in args.must]
     args.would = [i.replace("-", " ") for i in args.would]
+    
+        
+    if (len(args.would) + len(args.must) < args.number or len(args.must) > args.number):
+        print("The number of courses specified does not match the number desired.")
+        exit()
     
     # Convert term names
     if not args.term:
