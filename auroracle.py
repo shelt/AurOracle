@@ -199,7 +199,7 @@ def get_valid_combs(number, term_string, m_course_strings, p_course_strings, ear
 
     
     if (len(p_courses) + len(m_courses) < number or len(m_courses) > number):
-        print_write("The number of courses specified does not match the number desired.")
+        print("The number of courses specified does not match the number desired.")
         exit()
     p_combs = itertools.combinations(p_courses, number-len(m_courses)) # set of tuples of possible ways to fill remaining spots
     
