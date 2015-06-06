@@ -22,7 +22,7 @@ It will then generate potential course schedules, detailing which sections to ta
 
 By default, it will attempt to "compress" schedules, reducing potential for courses hours apart. Other optimizations can be performed, such as preferring class-free days.
 
-<div style="text-align:center"><img src="https://i.imgur.com/DLbHCkV.png" /></div>
+<p align="center"><img src="https://i.imgur.com/DLbHCkV.png" /></p>
 
 ## Usage
 
