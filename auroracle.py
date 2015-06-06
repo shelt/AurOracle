@@ -253,7 +253,7 @@ def generate_valid_combinations(courselist):
             if is_valid_combination(section_comb):
                 valid_combs.append(section_comb)
             count += 1
-            if count >= args.cap:
+            if args.cap and count >= args.cap:
                 break
     except StopIteration:
         pass
