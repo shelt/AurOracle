@@ -6,7 +6,7 @@ It generates course schedules that are free from [time conflicts](http://umanito
 
 I made this because I was sick of spending large amounts of time trying out potential combinations of sections of courses, only to encounter another conflict and be forced to move everything around.
 
-**NOTE:*** Schedules generated from this utility are no longer outputted to the command prompt, but rather directly to a text file. Generation can perform much faster when not printing every iteration.
+**NOTE:** Schedules generated from this utility are no longer outputted to the command prompt, but rather directly to a text file. Generation can perform much faster when not printing every iteration.
 
 ## How it works
 
@@ -22,7 +22,7 @@ It will then generate potential course schedules, detailing which sections to ta
 
 By default, it will attempt to "compress" schedules, reducing potential for courses hours apart. Other optimizations can be performed, such as preferring class-free days.
 
-<div style="text-align:center"><img src="https://i.imgur.com/gSgYQQW.png" /></div>
+<div style="text-align:center"><img src="https://i.imgur.com/DLbHCkV.png" /></div>
 
 ## Usage
 
@@ -73,7 +73,6 @@ Also note that because of the large amounts of time between when course schedule
 * Have the script recognize when classes are full.
 * Implement the ability to specify a single section (or range of sections) that you need to be in for a particular course.
 * More user error handling
-* out to file
 * Some departments (such as math) limit which lab you can take with which lecture section.
 * Verify that course sections with multiple entries in meeting times (such as CS) are handled correctly
 * Verify that other things in meeting times (such as finals) are handled correctly
