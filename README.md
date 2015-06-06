@@ -30,7 +30,7 @@ It will then generate potential course schedules, detailing which sections to ta
 Argument  | Function
 ---|---
 `--number`  | Number of courses you are taking
-`--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fal16)
+`--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fall16)
 `--must`    | The courses you must take. Obviously shouldn't be larger than `--number` value.
 `--would`   | The courses you would take as electives to fill the remaining spots (optional)
 `--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
