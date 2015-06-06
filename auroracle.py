@@ -12,7 +12,7 @@ import argparse
 import re
 from math import factorial
 
-from lib.sorting import quicksort_sections
+from lib.sorting import quicksort_sections,squish,get_sorted_daylists
 from lib.classes import Section,Course
 
 DEBUG = False
@@ -25,34 +25,6 @@ terms = {
 "winter17":"201710",
 "summer17":"201750"
 }
-"""
-    Convert a combination of
-    sections to a list containing
-    5 sorted lists of MTWRF
-"""
-def get_sorted_daylists(comb):
-    mon_sections = []
-    tues_sections = []
-    wed_sections = []
-    thurs_sections = []
-    fri_sections = []
-    for section in comb:
-        if "M" in section.day:
-            mon_sections.append(section)
-        if "T" in section.day:
-            tues_sections.append(section)
-        if "W" in section.day:
-            wed_sections.append(section)
-        if "R" in section.day:
-            thurs_sections.append(section)
-        if "F" in section.day:
-            fri_sections.append(section)
-    
-    # Sort
-    return [quicksort_sections(l) for l in [mon_sections,tues_sections,wed_sections,thurs_sections,fri_sections]]
-    
-    
-    
 
 """
     A wrapper for print() adding
@@ -280,11 +252,12 @@ def generate_valid_combinations(courselist):
             if is_valid_combination(section_comb):
                 valid_combs.append(section_comb)
                 
-                # Printing to console
-                print_section_comb(section_comb)
-                print_out("\n")
-                print_calendar(section_comb)
-                print_out("\n\n\n\n\n")
+                if not args.advanced:
+                    # Printing to console
+                    print_section_comb(section_comb)
+                    print_out("\n")
+                    print_calendar(section_comb)
+                    print_out("\n\n\n\n\n")
     except StopIteration:
         pass
     return valid_combs
@@ -313,6 +286,7 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--file')
     parser.add_argument('-e', '--earliest')
     parser.add_argument('-l', '--latest')
+    parser.add_argument('-a', '--advanced', action='store_true')
     args = parser.parse_args()
     
     # Error checking
@@ -352,6 +326,14 @@ if __name__ == "__main__":
     # Main call
     valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.earliest, args.latest, args.offline)
     
+    if args.advanced:
+        valid_combs = squish(valid_combs)
+        for comb in valid_combs:
+            print_section_comb(comb)
+            print_out("\n")
+            print_calendar(comb)
+            print_out("\n\n\n\n\n")
+        print_out("The schedules are sorted by quality from the bottom up.")
     
     
     if len(valid_combs) == 0:
