@@ -140,7 +140,7 @@ def get_course(name, term, earliest, latest, offlinemode):
         to use the long summaries.
     """
     # Downloaded HTML files may have tbody elements inserted by the browser.
-    if len(html.findall(".//table[@summary='This layout table is used to present the sections found']/tr")) == 0:
+    if len(html.xpath(".//table[@summary='This layout table is used to present the sections found']/tr")) == 0:
         tbody = "tbody/"
     else:
         tbody = ""
