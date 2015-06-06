@@ -25,6 +25,34 @@ terms = {
 "winter17":"201710",
 "summer17":"201750"
 }
+"""
+    Convert a combination of
+    sections to a list containing
+    5 sorted lists of MTWRF
+"""
+def get_sorted_daylists(comb):
+    mon_sections = []
+    tues_sections = []
+    wed_sections = []
+    thurs_sections = []
+    fri_sections = []
+    for section in comb:
+        if "M" in section.day:
+            mon_sections.append(section)
+        if "T" in section.day:
+            tues_sections.append(section)
+        if "W" in section.day:
+            wed_sections.append(section)
+        if "R" in section.day:
+            thurs_sections.append(section)
+        if "F" in section.day:
+            fri_sections.append(section)
+    
+    # Sort
+    return [quicksort_sections(l) for l in [mon_sections,tues_sections,wed_sections,thurs_sections,fri_sections]]
+    
+    
+    
 
 """
     A wrapper for print() adding
@@ -48,25 +76,7 @@ def print_calendar(comb):
     print_out("| MONDAY  || TUESDAY ||WEDNESDAY||THURSDAY || FRIDAY  |")
     
     # Create day lists (the columns of the calendar)
-    mon_sections = []
-    tues_sections = []
-    wed_sections = []
-    thurs_sections = []
-    fri_sections = []
-    for section in comb:
-        if "M" in section.day:
-            mon_sections.append(section)
-        if "T" in section.day:
-            tues_sections.append(section)
-        if "W" in section.day:
-            wed_sections.append(section)
-        if "R" in section.day:
-            thurs_sections.append(section)
-        if "F" in section.day:
-            fri_sections.append(section)
-    
-    # Sort
-    day_lists = [quicksort_sections(l) for l in [mon_sections,tues_sections,wed_sections,thurs_sections,fri_sections]]
+    day_lists = get_sorted_daylists(comb)
     
     # Convert to iterators
     day_iters = [iter(l) for l in day_lists]
@@ -341,6 +351,8 @@ if __name__ == "__main__":
     
     # Main call
     valid_combs = get_valid_combs(args.number, args.term, args.must, args.would, args.earliest, args.latest, args.offline)
+    
+    
     
     if len(valid_combs) == 0:
         print_out("No courses could be generated. Perhaps your request was too specific?")
