@@ -144,7 +144,6 @@ def get_course(name, term, earliest, latest, offlinemode):
         tbody = "tbody/"
     else:
         tbody = ""
-    #################### major
     
     # NODE EXTRACTION
     titlenodes = html.xpath(".//table[@summary='This layout table is used to present the sections found']/"+tbody+"tr/th[@class='ddtitle']/a")
