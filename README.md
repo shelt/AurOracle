@@ -2,9 +2,11 @@
 
 This is a course selection utility for Aurora. Tell it the courses you want to take, and it tells you the ways you can take them.
 
-It generates course schedules that are free from [time conflicts](http://umanitoba.ca/student/records/registration/access/639.html) and that include courses you must take and courses you would take.
+It generates course schedules that are free from [time conflicts](http://umanitoba.ca/student/records/registration/access/639.html) and that include courses you must take and courses you would take. It also attempts to determine which schedules are best and sort them accordingly.
 
 I made this because I was sick of spending large amounts of time trying out potential combinations of sections of courses, only to encounter another conflict and be forced to move everything around.
+
+**NOTE:*** Schedules generated from this utility are no longer outputted to the command prompt, but rather directly to a text file. Generation can perform much faster when not printing every iteration.
 
 ## How it works
 
@@ -12,18 +14,20 @@ Give the utility the following:
 * The total number of courses you wish to take.
 * The term you wish to generate potential schedules for.
 * The list of courses you MUST take.
-* OPTIONAL: The list of courses you would take as electives to fill any remaining slots.
-* OPTIONAL: The earliest time you could stand being in class.
-* OPTIONAL: The latest time you could stand being in class.
+* Optional: The list of courses you would take as electives to fill any remaining slots.
+* Optional: The earliest time you could stand being in class.
+* Optional: The latest time you could stand being in class.
 
 It will then generate potential course schedules, detailing which sections to take.
+
+By default, it will attempt to "compress" schedules, reducing potential for courses hours apart. Other optimizations can be performed, such as preferring class-free days.
 
 <div style="text-align:center"><img src="https://i.imgur.com/gSgYQQW.png" /></div>
 
 ## Usage
 
 ### Example
-    auroracle.py --number 3 --term fall15 --must MATH-1500 --would BIOL-3290 FREN-1152 COMP-1010
+    auroracle.py -n 4 -t fall15 --must COMP-1010 MATH-1500 GEOL-1420 FREN-1152 -e "9:30 AM" -l "3:30 PM"
     
 ### Arguments
 
@@ -36,14 +40,18 @@ Argument  | Function
 `--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
 `--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
-`--file`    | The file in which to write all output. (optional)
-`--advanced`| Run the utility in advanced mode. After generation is complete, schedules will be sorted by ostensible quality. Schedules will not be printed until generation is complete.
+`--file`    | Custom filename for the output file. (optional)
+
+#### Optimization options
+Argument  | Function
+---|---
+`--prefer-free-days`  | Lists schedules offering the most class-free days first, if any exist.
+`--no-compression`    | Do not sort schedules by least-time-between-courses.
+
     
 *For course names you need to use a dash, such as MATH-1500, or quotes, such as "MATH 1500"*
 
-If the utility isn't run with the `--advanced` flag, it will simply output the schedules rapidly as they are generated. The number of schedules generated can range from 10 to tens of thousands, the latter of which can take over 10 minutes. Since you probably don't need all permutations of every section, press Ctrl-C to stop generation at any time. (If you wish to have the results sorted by quality by running in advanced mode, however, you must wait until it completes.)
-
-An example of input and output can be seen in the [example-output.txt](example-output.txt) file. Eventually the output will be viewable as a day-by-day schedule, perhaps if I make a web GUI for this utility.
+An example of input and output can be seen in the [example-output.txt](example-output.txt) file.
 
 ## Installation
 This utility uses **Python 2.7**.
