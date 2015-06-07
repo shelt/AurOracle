@@ -29,7 +29,7 @@ You can also limit a course to specific sections by including them in the course
 ## Usage
 
 ### Example
-    auroracle.py -n 4 -t fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 -e "9:30 AM" -l "3:30 PM"
+    auroracle.py --number 4 --term fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 --earliest "9:30 AM" --latest "3:30 PM"
     
 ### Arguments
 
