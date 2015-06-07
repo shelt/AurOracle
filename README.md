@@ -12,8 +12,8 @@ I made this because I was sick of spending large amounts of time trying out pote
 
 Give the utility the following:
 * The total number of courses you wish to take.
-* The term you wish to generate potential schedules for.
-* The list of courses you MUST take.
+* The term you wish to generate schedules for.
+* The list of courses you are taking for sure.
 * Optional: The list of courses you would take as electives to fill any remaining slots.
 * Optional: The earliest time you could stand being in class.
 * Optional: The latest time you could stand being in class.
@@ -22,12 +22,14 @@ It will then generate potential course schedules, detailing which sections to ta
 
 By default, it will attempt to "compress" schedules, reducing potential for courses hours apart. Other optimizations can be performed, such as preferring class-free days.
 
+You can also limit a course to specific sections by including them in the course name (`MATH-1500-A01-A02`)
+
 <p align="center"><img src="https://i.imgur.com/DLbHCkV.png" /></p>
 
 ## Usage
 
 ### Example
-    auroracle.py -n 4 -t fall15 --must COMP-1010 MATH-1500 GEOL-1420 FREN-1152 -e "9:30 AM" -l "3:30 PM"
+    auroracle.py -n 4 -t fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 -e "9:30 AM" -l "3:30 PM"
     
 ### Arguments
 
@@ -39,6 +41,10 @@ Argument  | Function
 `--would`   | The courses you would take as electives to fill the remaining spots (optional)
 `--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
+
+#### Advanced options
+Argument  | Function
+---|---
 `--offline` | If this argument is provided, offline mode is enabled. The utility will then only grab data from "Class Schedule Listing" HTML pages downloaded to the /offline directory. See [/offline/about.txt](offline/about.txt) for more info.
 `--file`    | Custom filename for the output file. (optional)
 `--cap`     | Caps the generation count. If the utility is taking over 10 minutes, you may want to set the cap to 100K-200K.
