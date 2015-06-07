@@ -91,13 +91,22 @@ def print_section_comb(comb):
     Retrieves the course from Aurora.
 """
 def get_course(name, term, earliest, latest, offlinemode):
-    name = name.upper()
-    course = Course(name)
-    subj,crse = name.split(" ")
+    name = name.upper() # Note that name could be "MATH-1500" or "MATH-1500-A05-A06" etc.
+    name_parts = name.split(" ")
+    subj = name_parts[0]
+    crse = name_parts[1]
+    course = Course(subj + " " + crse)
+
     
+    specific_sections = []
+    # Sections specified?
+    for sec_i in range(2, len(name_parts)):
+        specific_sections.append(name_parts[sec_i])
+    
+    # Retrieval
     if offlinemode:
         try:
-            html = lh.parse("offline/" + name + ".html")
+            html = lh.parse("offline/" + subj + " " + crse + ".html")
         except IOError:
             html = lh.parse("offline/" + subj + "-" + crse + ".html")
     else:
@@ -156,6 +165,10 @@ def get_course(name, term, earliest, latest, offlinemode):
     for title,tablenode in nodes.items():
         # Section
         section_num = title[-3:]
+        
+        # Is a section specified?
+        if len(specific_sections) > 0 and section_num not in specific_sections:
+            continue
         
         # Only allow courses and labs
         if not (section_num[0] == "A" or section_num[0] == "B"):
