@@ -1,3 +1,15 @@
+<!---
+********************************************************
+                     NOTICE
+This file is meant to be read with a markdown viewer.
+Viewing it as a text file will likely be difficult and
+confusing. Please visit the following link to view it
+as intended:
+https://github.com/shelt/AurOracle/blob/master/README.md
+********************************************************
+-->
+
+
 # AurOracle
 
 This is a course selection utility for Aurora. Tell it the courses you want to take, and it tells you the ways you can take them.
@@ -39,7 +51,7 @@ Argument  | Function
 `--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fall16)
 `--must`    | The courses you must take. Obviously shouldn't be larger than `--number` value.
 `--would`   | The courses you would take as electives to fill the remaining spots (optional)
-`--earliest`| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
+<span style="white-space: nowrap;">`--earliest`</span>| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
 
 #### Advanced options
