@@ -347,13 +347,13 @@ if __name__ == "__main__":
         args.file = args.file.replace(".txt","") + ".out.txt"
         if os.path.dirname(args.file) and not os.path.exists(os.path.dirname(args.file)):
             os.makedirs(os.path.dirname(args.file))
-        outfile = file(args.file,'w')
     else:
         # Construct name
         args.file = " ".join(args.must + args.would)
+        args.file = args.term + "-" + args.file
         args.file = args.file[:250] + (args.file[250:] and '..')
         args.file = args.file.replace(" ","-") + ".out.txt"
-        outfile = file(args.file, 'w')
+    outfile = file(args.file, 'w')
     
     # Main call
     print("Generating schedules...")
