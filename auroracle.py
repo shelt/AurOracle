@@ -133,39 +133,35 @@ def get_course(name, term, earliest, latest, offlinemode):
         specific_sections.append(name_parts[sec_i])
     
     # Retrieval
-    if offlinemode:
-        try:
-            html = lh.parse("offline/" + subj + " " + crse + ".html")
-        except IOError:
-            html = lh.parse("offline/" + subj + "-" + crse + ".html")
+    dpath = "cache/"+term+"/"
+    fpath = dpath + subj+"-"+crse+".html"
+    # Is it cached?
+    if os.path.exists(fpath):
+        html = lh.parse(fpath)
         root = html.getroot()
+    elif not offlinemode:
+        url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
+        
+        request = urllib2.Request(url)
+        #request.add_header('User-Agent', "Mozilla/5.0 (X11; U; Linux i686) AppleWebKit/536.16 (KHTML, like Gecko) Chrome/35.0.2049.59 Safari/536.16")
+        #request.add_header('Referer', "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
+        response = urllib2.urlopen(request)
+        html = lh.parse(response)
+        
+        root = html.getroot()
+        if root is None:
+            print("Fatal error: failed to retrieve data for course "+name)
+            exit()
+        
+        # Add to cache
+        data = lh.tostring(root)
+        if not os.path.exists(os.path.dirname(fpath)):
+            os.makedirs(os.path.dirname(fpath))
+        with open(fpath,'wb') as f:
+            f.write(data)
     else:
-        # Caching
-        dpath = "cache/"+term+"/"
-        fpath = dpath + subj+"-"+crse+".html"
-        if os.path.exists(fpath):
-            html = lh.parse(fpath)
-            root = html.getroot()
-        else:
-            url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
-            
-            request = urllib2.Request(url)
-            #request.add_header('User-Agent', "Mozilla/5.0 (X11; U; Linux i686) AppleWebKit/536.16 (KHTML, like Gecko) Chrome/35.0.2049.59 Safari/536.16")
-            #request.add_header('Referer', "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
-            response = urllib2.urlopen(request)
-            html = lh.parse(response)
-            
-            root = html.getroot()
-            if root is None:
-                print("Fatal error: failed to retrieve data for course "+name)
-                exit()
-            
-            # Add to cache
-            data = lh.tostring(root)
-            if not os.path.exists(os.path.dirname(fpath)):
-                os.makedirs(os.path.dirname(fpath))
-            with open(fpath,'wb') as f:
-                f.write(data)
+        print("Offline mode failed: Course " + name + " not found in /cache.")
+        exit()
             
     nodes = {}
     """
