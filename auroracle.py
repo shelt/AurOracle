@@ -5,6 +5,7 @@
 
 import os
 import time
+import threading
 import urllib2
 import lxml.html as lh
 import itertools
@@ -17,6 +18,7 @@ from lib.sorting import compress,prefer_free
 from lib.classes import Section,Course
 
 DEBUG = False
+MAX_GET_PER_SECOND = 1
 
 terms = {
 "fall15":"201590",
@@ -79,6 +81,33 @@ def print_calendar(comb):
 
 
 """
+    DECORATOR: Prevents function func
+    from being called more than max times
+    per second.
+    Used to rate limit get_course calls.
+"""
+def rate_limit(max):
+    lock = threading.Lock()
+    minInterval = 1.0 / float(max)
+    def decorate(func):
+        delta = [0.0]
+        def rate_limited_function(args,*kargs):
+            lock.acquire()
+            elapsed = time.clock() - delta[0]
+            remaining = minInterval - elapsed
+
+            if remaining>0:
+                time.sleep(remaining)
+
+            lock.release()
+
+            ret = func(args,*kargs)
+            delta[0] = time.clock()
+            return ret
+        return rate_limited_function
+    return decorate
+
+"""
     Prints a combination of sections
     to the outfile.
 """
@@ -90,6 +119,7 @@ def print_section_comb(comb):
 """
     Retrieves the course from Aurora.
 """
+@rate_limit(MAX_GET_PER_SECOND)
 def get_course(name, term, earliest, latest, offlinemode):
     name = name.upper() # Note that name could be "MATH-1500" or "MATH-1500-A05-A06" etc.
     name_parts = name.split(" ")
