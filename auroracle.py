@@ -126,7 +126,6 @@ def get_course(name, term, earliest, latest, offlinemode):
     subj = name_parts[0]
     crse = name_parts[1]
     course = Course(subj + " " + crse)
-
     
     specific_sections = []
     # Sections specified?
@@ -139,30 +138,35 @@ def get_course(name, term, earliest, latest, offlinemode):
             html = lh.parse("offline/" + subj + " " + crse + ".html")
         except IOError:
             html = lh.parse("offline/" + subj + "-" + crse + ".html")
+        root = html.getroot()
     else:
         # Caching
         dpath = "cache/"+term+"/"
         fpath = dpath + subj+"-"+crse+".html"
         if os.path.exists(fpath):
-            with open(fpath) as f:
-                html = lh.parse(f)
+            html = lh.parse(fpath)
+            root = html.getroot()
         else:
             url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
             
             request = urllib2.Request(url)
-            request.add_header('User-Agent', "Mozilla/5.0 (X11; U; Linux i686) AppleWebKit/536.16 (KHTML, like Gecko) Chrome/35.0.2049.59 Safari/536.16")
-            request.add_header('Referer', "https://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
+            #request.add_header('User-Agent', "Mozilla/5.0 (X11; U; Linux i686) AppleWebKit/536.16 (KHTML, like Gecko) Chrome/35.0.2049.59 Safari/536.16")
+            #request.add_header('Referer', "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
             response = urllib2.urlopen(request)
-            data = response.read()
-            html =  lh.parse(response)
+            html = lh.parse(response)
+            
+            root = html.getroot()
+            if root is None:
+                print("Fatal error: failed to retrieve data for course "+name)
+                exit()
             
             # Add to cache
+            data = lh.tostring(root)
             if not os.path.exists(os.path.dirname(fpath)):
                 os.makedirs(os.path.dirname(fpath))
             with open(fpath,'wb') as f:
                 f.write(data)
             
-    
     nodes = {}
     """
         "nodes" refers to the entries in the section table.
@@ -179,13 +183,13 @@ def get_course(name, term, earliest, latest, offlinemode):
         to use the long summaries.
     """
     # Downloaded HTML files may have tbody elements inserted by the browser.
-    if len(html.xpath(".//table[@summary='This layout table is used to present the sections found']/tr")) == 0:
+    if len(root.xpath(".//table[@summary='This layout table is used to present the sections found']/tr")) == 0:
         tbody = "tbody/"
     else:
         tbody = ""
     
     # NODE EXTRACTION
-    titlenodes = html.xpath(".//table[@summary='This layout table is used to present the sections found']/"+tbody+"tr/th[@class='ddtitle']/a")
+    titlenodes = root.xpath(".//table[@summary='This layout table is used to present the sections found']/"+tbody+"tr/th[@class='ddtitle']/a")
     
     for title_a in titlenodes:
         body_tr = title_a.getparent().getparent().getnext() # From tr/th/a to tr/ and the next tr is the body of the entry.
