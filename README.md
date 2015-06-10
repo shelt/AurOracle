@@ -27,8 +27,6 @@ Give the utility the following:
 * The term you wish to generate schedules for.
 * The list of courses you are taking for sure.
 * Optional: The list of courses you would take as electives to fill any remaining slots.
-* Optional: The earliest time you could stand being in class.
-* Optional: The latest time you could stand being in class.
 
 It will then generate potential course schedules, detailing which sections to take.
 
