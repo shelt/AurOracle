@@ -231,7 +231,7 @@ def get_course(name, term, earliest, latest, offlinemode):
                 course.haslab = True
                 course.lab = Course(course.name)
             course.lab.sections.append(Section(section_num, start_time, end_time, section_day, course))
-    if len(course.sections == 0):
+    if len(course.sections) == 0:
         print("Course " + name + " has no sections available on aurora.")
         exit()
     
@@ -349,11 +349,11 @@ if __name__ == "__main__":
         exit()
     
     # Error checking
-    if not args.number
+    if not args.number:
         if args.would:
             print("You must specify a number of courses desired. \nExample: '--number 5'")
             exit()
-        else
+        else:
             args.number = len(args.must)
     
     # Course parsing
