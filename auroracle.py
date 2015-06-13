@@ -314,6 +314,55 @@ def is_valid_combination(sectionlist):
             if section.conflicts_with(othersection):
                 return False
     return True
+
+def runwizard():
+    # args.term
+    print("Which term do you want to generate schedules for? (example: fall15)")
+    while args.term == None:
+        i = raw_input("> ").lower()
+        if i in terms.keys():
+            args.term = i
+        else:
+            print("Not a valid option.")
+            
+    # args.number
+    print("How many courses are you taking for this term?")
+    while args.number == None:
+        i = int(raw_input("> "))
+        if i:
+            args.number = i
+        else:
+            print("Not a valid number.")
+    
+    # args.must
+    print("List the courses you must take, separated by spaces. (example: MATH-1300 COMP-1010)")
+    while args.must == None:
+        i = raw_input("> ").split(" ")
+        if not i or len(i) <= args.number:
+            args.must = i
+        else:
+            print("Number of courses provided does not match number specified.")
+    
+    # args.would
+    if len(args.must) < args.number:
+        print("List any amount of courses that you'd take to fill the remaining slots.")
+        i = raw_input("> ").split(" ")
+        if (len(i) + len(args.must)) >= args.number:
+            args.would = i
+        else:
+            print("You need at least enough to fill the remaining slots.")
+    
+    # args.earliest
+    print("What is the earliest you want to be in class? If you don't care, just leave it blank. (format: 8:30 AM)")
+    i = raw_input("> ")
+    if i:
+        args.earliest = i
+        
+    # args.latest
+    print("What is the latest you want to be in class? If you don't care, just leave it blank. (format: 3:30 PM)")
+    i = raw_input("> ")
+    if i:
+        args.latest = i
     
 
 if __name__ == "__main__":
@@ -342,6 +391,9 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
+    # Wizard
+    if not any(vars(args).values()):
+        runwizard()
     
     if not args.must and not args.would:
         print("You must specify at least one course.")
@@ -350,7 +402,7 @@ if __name__ == "__main__":
     # Error checking
     if not args.number:
         if args.would:
-            print("You must specify a number of courses desired. \nExample: '--number 5'")
+            print("Because you used the --would parameter, you must specify a number of courses desired. \nExample: '--number 5'")
             exit()
         else:
             args.number = len(args.must)
