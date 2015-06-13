@@ -37,7 +37,10 @@ You can also limit a course to specific sections by including them in the course
 
 ## Usage
 
-### Example
+### Wizard
+**This utility now has a wizard. If you have never used a command-line utility before or are otherwise confused, you probably want to use it. To use it, follow the [install steps](#install-steps) and just double-click the `auroracle.py` file.**
+
+### Using the CLI
     auroracle.py --term fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 --earliest "9:30 AM" --latest "3:30 PM"
     
 ### Arguments
@@ -76,7 +79,8 @@ This utility uses **Python 2.7**.
 * Download and run the Python 2.7 installer found [here](https://www.python.org/downloads/).
 * Download a zip file of the utility from [here](https://github.com/shelt/AurOracle/archive/master.zip)
 * Unzip to a directory.
-* Open a command line in that directory, and run `auroracle.py` followed by the arguments you want.
+* **If you want to use the wizard:** Simply double click the file `auroracle.py`.
+* **If you want to use the CLI:** Open a command line in that directory, and run `auroracle.py` followed by the arguments you want.
 
 ## Benchmarking
 Some combinations of courses yield more potential schedules than others. The following are benchmarks of the time it took the utility to generate a large amount of schedules (297590).
