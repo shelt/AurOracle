@@ -37,10 +37,10 @@ You can also limit a course to specific sections by including them in the course
 
 ## Usage
 
-### Wizard
+### Using the Wizard
 **This utility now has a wizard. If you have never used a command-line utility before or are otherwise confused, you probably want to use it. To use it, follow the [install steps](#install-steps) and just double-click the `auroracle.py` file.**
 
-### Using the CLI
+### Using the command-line
     auroracle.py --term fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 --earliest "9:30 AM" --latest "3:30 PM"
     
 ### Arguments
