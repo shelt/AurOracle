@@ -41,9 +41,11 @@ You can also limit a course to specific sections by including them in the course
 **This utility now has a wizard. If you have never used a command-line utility before or are otherwise confused, you probably want to use it. To use it, follow the [install steps](#install-steps) and just double-click the `auroracle.py` file.**
 
 ### Using the command-line
+
+#### Example
     auroracle.py --term fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 --earliest "9:30 AM" --latest "3:30 PM"
     
-### Arguments
+#### Arguments
 
 Argument  | Function
 ---|---
@@ -54,7 +56,7 @@ Argument  | Function
 <span style="white-space: nowrap;">`--earliest`</span>| The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
 `--latest`  | The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
 
-#### Advanced options
+#### Advanced arguments
 Argument  | Function
 ---|---
 <span style="white-space: nowrap;">`--offline`</span>| If this argument is provided, offline mode is enabled. The utility will then only grab data from aptly named HTML pages downloaded to the /cache directory. (ex: "MATH-1500.html")
@@ -110,7 +112,6 @@ Also note that because of the large amounts of time between when course schedule
 ## TODO
 * Implement a cannot-attend-on-these-days feature.
 * Have the script recognize when classes are full.
-* Implement the ability to specify a single section (or range of sections) that you need to be in for a particular course.
 * More user error handling
 * Some departments (such as math) limit which lab you can take with which lecture section.
 * Verify that course sections with multiple entries in meeting times (such as CS) are handled correctly
