@@ -326,7 +326,7 @@ def runwizard():
             print("Not a valid option.")
             
     # args.number
-    print("How many courses are you taking for this term?")
+    print("How many courses are you taking for this term? (example: 3)")
     while args.number == None:
         i = int(raw_input("> "))
         if i:
@@ -335,7 +335,7 @@ def runwizard():
             print("Not a valid number.")
     
     # args.must
-    print("List the courses you must take, separated by spaces. (example: MATH-1300 COMP-1010)")
+    print("List the courses you know you must take, separated by spaces. (example: MATH-1300 COMP-1010)")
     while args.must == None:
         i = raw_input("> ").split(" ")
         if not i or len(i) <= args.number:
@@ -345,7 +345,7 @@ def runwizard():
     
     # args.would
     if len(args.must) < args.number:
-        print("List any amount of courses that you'd take to fill the remaining slots.")
+        print("List any amount of courses that you'd take to fill the remaining "+str(args.number - len(args.must))+" slots. (example: GEOL-1420 FREN-1152)")
         i = raw_input("> ").split(" ")
         if (len(i) + len(args.must)) >= args.number:
             args.would = i
