@@ -343,13 +343,18 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    # Error checking
-    if not args.number:
-        print("You must specify a number of courses desired. \nExample: '--number 5'")
-        exit()
+    
     if not args.must and not args.would:
         print("You must specify at least one course.")
         exit()
+    
+    # Error checking
+    if not args.number
+        if args.would:
+            print("You must specify a number of courses desired. \nExample: '--number 5'")
+            exit()
+        else
+            args.number = len(args.must)
     
     # Course parsing
     if not args.must:
