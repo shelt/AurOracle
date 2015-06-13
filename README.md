@@ -23,10 +23,9 @@ I made this because I was sick of spending large amounts of time trying out pote
 ## How it works
 
 Give the utility the following:
-* The total number of courses you wish to take.
 * The term you wish to generate schedules for.
 * The list of courses you are taking for sure.
-* Optional: The list of courses you would take as electives to fill any remaining slots.
+* Optional: The number of courses you want to take and the courses you would take to fill those remaining slots.
 
 It will then generate potential course schedules, detailing which sections to take.
 
