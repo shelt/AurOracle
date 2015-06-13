@@ -39,13 +39,13 @@ You can also limit a course to specific sections by including them in the course
 ## Usage
 
 ### Example
-    auroracle.py --number 4 --term fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 --earliest "9:30 AM" --latest "3:30 PM"
+    auroracle.py --term fall15 --must COMP-1010 MATH-1500 GEOL-1420-A01 FREN-1152 --earliest "9:30 AM" --latest "3:30 PM"
     
 ### Arguments
 
 Argument  | Function
 ---|---
-`--number`  | Number of courses you are taking
+`--number`  | Number of courses you are taking. Only required if the `--would` option is used.
 `--term`    | The term in which you are taking them. (ex. fall15, winter16, summer16, fall16)
 `--must`    | The courses you must take. Obviously shouldn't be larger than `--number` value.
 `--would`   | The courses you would take as electives to fill the remaining spots (optional)
