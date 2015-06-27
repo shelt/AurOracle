@@ -17,7 +17,6 @@ from lib.sorting import quicksort_sections,get_sorted_daylists
 from lib.sorting import compress,prefer_free
 from lib.classes import Section,Course
 
-DEBUG = False
 MAX_GET_PER_SECOND = 1
 
 terms = {
