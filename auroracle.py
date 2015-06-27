@@ -17,7 +17,7 @@ from lib.sorting import quicksort_sections,get_sorted_daylists
 from lib.sorting import compress,prefer_free
 from lib.classes import Section,Course
 
-MAX_GET_PER_SECOND = 1
+RATE_LIMIT = 1 # Max calls to get_course (and web requests) per second
 
 terms = {
 "fall15":"201590",
@@ -118,7 +118,7 @@ def print_section_comb(comb):
 """
     Retrieves the course from Aurora.
 """
-@rate_limit(MAX_GET_PER_SECOND)
+@rate_limit(RATE_LIMIT)
 def get_course(name, term, earliest, latest, offlinemode):
     name = name.upper() # Note that name could be "MATH-1500" or "MATH-1500-A05-A06" etc.
     name_parts = name.split(" ")
