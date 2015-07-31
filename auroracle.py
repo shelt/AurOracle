@@ -201,6 +201,10 @@ def get_course(name, term, earliest, latest, offlinemode):
         # Only allow courses and labs
         if not (section_num[0] == "A" or section_num[0] == "B"):
             continue
+            
+        # Check for exclusion
+        if args.xclude and (course.name + " " + section_num) in args.xclude:
+            continue
         
         # Day
         section_day = tablenode.find("./td[3]").text
@@ -370,6 +374,7 @@ if __name__ == "__main__":
     
     parser.add_argument('-m', '--must', nargs='+')
     parser.add_argument('-w', '--would', nargs='+')
+    parser.add_argument('-x', '--xclude', nargs='+')
     
     parser.add_argument('-o', '--offline',  action='store_true')
     parser.add_argument('-v', '--verbose',  action='store_true')
@@ -409,11 +414,14 @@ if __name__ == "__main__":
         args.would = []
     args.must = [i.replace("-", " ") for i in args.must]
     args.would = [i.replace("-", " ") for i in args.would]
-    
         
     if (len(args.would) + len(args.must) < args.number or len(args.must) > args.number):
         print("The number of courses specified does not match the number desired.")
         exit()
+        
+    # Exclusion parsing
+    if args.xclude:
+        args.xclude = [i.replace("-", " ") for i in args.xclude]
     
     # Convert term names
     if not args.term:

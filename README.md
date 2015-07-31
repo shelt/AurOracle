@@ -49,8 +49,8 @@ You can also limit a course to specific sections by including them in the course
 
     --number      Number of courses you are taking. Only required if the --would option is used.
     --term        The term in which you are taking them. (ex. fall15, winter16, summer16, fall16)
-    --must        The courses you must take. Obviously shouldn't be larger than --number value.
-    --would       The courses you would take as electives to fill the remaining spots (optional)
+    --must        A list of courses you must take. Obviously shouldn't be larger than --number value.
+    --would       A list of courses you would take as electives to fill the remaining spots (optional)
     --earliest    The earliest time you could stand being in class at. (Format: "10:00 PM") (optional)
     --latest      The latest time you could stand being in class at.   (Format: "10:00 PM") (optional)
     
@@ -61,6 +61,7 @@ You can also limit a course to specific sections by including them in the course
     --offline     If this argument is provided, offline mode is enabled. The utility will then only grab data from aptly named HTML pages downloaded to the /cache directory. (ex: "MATH-1500.html")
     --file        Custom filename for the output file. (optional)
     --cap         Caps the generation count. If the utility is taking over 10 minutes, you may want to set the cap to 100K-200K.
+    --xclude      A list of course sections you can't take. Format: COMP-1010-A01
 
 
 #### Optimization options
