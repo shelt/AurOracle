@@ -99,7 +99,7 @@ Some combinations of courses yield more potential schedules than others. The fol
     Writing:       38s
     TOTAL:        121s
     
-    output file size: 356MB
+    output file size: 356KB
 
 ## Disclaimer
 Aurora/the university may or may not care about light web scraping from students. I have yet to hear back. As it stands now, I take no responsibility if you get into trouble using this utility.
