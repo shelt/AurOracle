@@ -427,6 +427,10 @@ if __name__ == "__main__":
     if not args.term:
         print("You must specify an academic term. \nExample: '--term winter16'")
         exit()
+    args.term = args.term.lower()
+    if args.term not in terms:
+        print("Invalid academic term. \nExample: '--term winter16'")
+        exit()
     args.term = terms[args.term]
     
     # Earliest / latest time parsing
