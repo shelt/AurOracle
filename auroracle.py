@@ -13,9 +13,9 @@ import argparse
 import re
 from math import factorial
 
-from lib.sorting import quicksort_sections,get_sorted_daylists
-from lib.sorting import compress,prefer_free
-from lib.classes import Section,Course
+from modules.sorting import quicksort_sections,get_sorted_daylists
+from modules.sorting import compress,prefer_free
+from modules.classes import Section,Course
 
 RATE_LIMIT = 1 # Max calls to get_course (and web requests) per second
 
