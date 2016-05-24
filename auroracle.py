@@ -318,19 +318,23 @@ def runwizard():
     # args.term
     print("Which term do you want to generate schedules for? (example: fall15)")
     while args.term == None:
-        i = raw_input("> ").lower()
-        if i in terms.keys():
+        try:
+            i = raw_input("> ").lower().replace(" ", "")
+            if i not in terms.keys():
+                raise ValueError
             args.term = i
-        else:
+        except ValueError:
             print("Not a valid option.")
             
     # args.number
     print("How many courses are you taking for this term? (example: 3)")
     while args.number == None:
-        i = int(raw_input("> "))
-        if i:
+        try:
+            i = int(raw_input("> "))
+            if i == 0:
+                raise ValueError
             args.number = i
-        else:
+        except ValueError:
             print("Not a valid number.")
     
     # args.must
@@ -345,11 +349,12 @@ def runwizard():
     # args.would
     if len(args.must) < args.number:
         print("List any amount of courses that you'd take to fill the remaining "+str(args.number - len(args.must))+" slots. (example: GEOL-1420 FREN-1152)")
-        i = raw_input("> ").split(" ")
-        if (len(i) + len(args.must)) >= args.number:
-            args.would = i
-        else:
-            print("You need at least enough to fill the remaining slots.")
+        while args.would == None:
+            i = raw_input("> ").split(" ")
+            if (len(i) + len(args.must)) >= args.number:
+                args.would = i
+            else:
+                print("You need at least enough to fill the remaining slots.")
     
     # args.earliest
     print("What is the earliest you want to be in class? If you don't care, just leave it blank. (format: 8:30 AM)")
