@@ -12,6 +12,7 @@ import itertools
 import argparse
 import re
 from math import factorial
+import ssl
 
 from modules.sorting import quicksort_sections,get_sorted_daylists
 from modules.sorting import compress,prefer_free
@@ -23,10 +24,18 @@ terms = {
 "fall15":"201590",
 "winter16":"201610",
 "summer16":"201650",
-"fall16":"201590",
+"fall16":"201690",
 "winter17":"201710",
 "summer17":"201750"
+"fall17":"201690",
+"winter18":"201710",
+"summer18":"201750"
 }
+
+# Create bypass context
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
 
 """
     The function to print schedule data
@@ -139,11 +148,11 @@ def get_course(name, term, earliest, latest, offlinemode):
         html = lh.parse(fpath)
         root = html.getroot()
     elif not offlinemode:
-        url = "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
+        url = "https://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_listcrse?term_in="+term+"&subj_in="+subj+"&crse_in="+crse+"&schd_in=F02"
         request = urllib2.Request(url)
         #request.add_header('User-Agent', "Mozilla/5.0 (X11; U; Linux i686) AppleWebKit/536.16 (KHTML, like Gecko) Chrome/35.0.2049.59 Safari/536.16")
-        #request.add_header('Referer', "http://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
-        response = urllib2.urlopen(request, timeout=30)
+        #request.add_header('Referer', "https://aurora.umanitoba.ca/banprod/bwckctlg.p_disp_course_detail?cat_term_in="+term+"&subj_code_in="+subj+"&crse_numb_in=" + crse)
+        response = urllib2.urlopen(request, timeout=30, context=ctx)
         html = lh.parse(response)
         
         root = html.getroot()
